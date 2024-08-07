@@ -24,7 +24,7 @@ jobs:
             - name: Notify if API endpoint is not accessible
               uses: cinotify/github-action@v1.6.0
               with:
-                to: your-email@example.com
-                subject: API Endpoint Status
+                to: conales.jt@pg.com
+                subject: SSP API Endpoint Status
                 body: The API endpoint is not accessible. Please investigate.
           fi
