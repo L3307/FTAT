@@ -19,7 +19,7 @@ jobs:
       - name: Compare Variables
         run: |
           if [ "${{ env.someField }}" = "Hi, I am alive." ]; then
-            echo "API Status: AEGIS is Alive"
+            echo "API Status:" - ${{ env.someField }}
           else
             echo "API endpoint cannot be accessed"
             # If the response is different, notify me via email
