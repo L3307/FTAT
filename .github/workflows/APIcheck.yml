@@ -1,7 +1,7 @@
 on:
   schedule:
     # Run every hour, on the hour. This can be customized to checking as frequently as every 5 minutes.
-    - cron:  '0 * * * *'
+    - cron: '0 * * * *'
 
 name: Check for API Status
 
@@ -9,38 +9,30 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-
-      # Use cURL to fetch the given URL, saving the response to `data.json`
       - name: Fetch data
         run: curl "http://gadc-automat01.na.pg.com:8330/isAlive" -o data.json
 
-      # Optionally, use `jq` to pull one or more fields from the JSON to include in the SMS message
       - name: Parse data
         id: parse_data
         run: echo '::set-output name=someField::'$(jq -r '.someField' data.json)
-          
+
       - name: Compare Variables
         run: |
-          if [ "${{ env.SOME_FIELD }}" = "Hi, I am alive." ]; then
+          if [ "${{ env.someField }}" = "Hi, I am alive." ]; then
             echo "API Status: AEGIS is Alive"
           else
-                  # If the response is different, notify me via email          
-                  # You may pin to the exact commit or the version.
-                  # uses: cinotify/github-action@92a15ed24b17cce1bb185b985c0d463859c5b800
-                - name: Notify if data has changed
-                  uses: cinotify/github-action@v1.6.0
-                  with:
-                    # Recipient email address
-                    to: conales.jt@pg.com
-                    # Email subject
-                    subject: Aegis API Status
-                    # Email body
-                    body: API endpoint cannot be accessed
-                    # Email body MIME type
-                    #type: # optional
-                    # Email attachment
-                    #attachment: # optional
-          fi  
+            echo "API endpoint cannot be accessed"
+            # If the response is different, notify me via email
+            - name: Notify if data has changed
+              uses: cinotify/github-action@v1.6.0
+              with:
+                # Recipient email address
+                to: conales.jt@pg.com
+                # Email subject
+                subject: Aegis API Status
+                # Email body
+                body: API endpoint cannot be accessed
+          fi 
     
   
 
