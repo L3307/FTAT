@@ -2,7 +2,7 @@ on:
   schedule:
     - cron: '*/30 * * * *'
 
-name: Check API Status
+name: Check SSP API Status
 
 jobs:
   check_api_status:
