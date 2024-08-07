@@ -26,5 +26,5 @@ jobs:
               with:
                 to: conales.jt@pg.com
                 subject: SSP API Endpoint Status
-                body: The API endpoint is not accessible. Please investigate.
+                body: The SSP API endpoint is not accessible. Please investigate.
           fi
