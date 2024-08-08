@@ -11,12 +11,12 @@ jobs:
       - name: Check API Status
         id: api_status
         run: |
-          response=$(curl -s -o /dev/null -w "%{http_code}" https://httpstat.us/404)
-          echo "::set-env name=GITHUB_STATE::${response}"
+          response=$(curl -s -o /dev/null -w "%{http_code}" http://example.com/api/endpoint)
+          echo "STATE=${response}" >> $GITHUB_ENV
 
       - name: Use API Status
         run: |
-          if [ "${{ env.GITHUB_STATE }}" = "200" ]; then
+          if [ "${{ env.STATE }}" = "200" ]; then
             echo "API endpoint is up and running"
           else
             echo "API endpoint is not accessible"
@@ -24,9 +24,9 @@ jobs:
             - name: Notify if API endpoint is not accessible
               uses: cinotify/github-action@v1.6.0
               env:
-                GITHUB_OUTPUT: |
+                OUTPUT: |
                   to=conales.jt@pg.com
                   subject=AEGIS API Endpoint Status
-                  body=The AEGIS API endpoint is not accessible. The API status is ${{ env.GITHUB_STATE }}. Please investigate.
-              run: echo "$GITHUB_OUTPUT" > $GITHUB_ENV
+                  body=The AEGIS API endpoint is not accessible. The API status is ${{ env.STATE }}. Please investigate.
+              run: echo "$OUTPUT" > $GITHUB_ENV
           fi
