@@ -20,7 +20,8 @@ jobs:
             echo "API endpoint is up and running"
           else
             echo "API endpoint is not accessible"
-      
+          fi
+          
           - name: Notify if API endpoint is not accessible
             uses: cinotify/github-action@v1.6.0
             env:
