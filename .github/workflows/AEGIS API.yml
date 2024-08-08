@@ -28,5 +28,4 @@ jobs:
                 to=conales.jt@pg.com
                 subject=AEGIS API Endpoint Status
                 body=The AEGIS API endpoint is not accessible. The API status is ${{ env.STATE }}. Please investigate.
-            run: echo "$OUTPUT" > $GITHUB_ENV
-          fi
+          run: echo "$OUTPUT" > $GITHUB_ENV
