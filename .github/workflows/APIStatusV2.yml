@@ -1,0 +1,41 @@
+on:
+  schedule:
+    - cron: '*/3 * * * *'
+
+name: Check API Status V2
+
+jobs:
+  check_api_status:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check API Status
+        id: api_status
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://httpstat.us/404)
+          echo "STATE=${response}" >> $GITHUB_ENV
+
+      - name: Use API Status
+        id: api_status_check
+        run: |
+          if [ "${{ env.STATE }}" = "200" ]; then
+            echo "API endpoint is up and running"
+            echo "send_email=false" >> $GITHUB_ENV
+          else
+            echo "API endpoint is not accessible"
+            echo "send_email=true" >> $GITHUB_ENV
+          fi
+
+      - name: Create Environment File
+        run: |
+          if [ "${{ env.send_email }}" = "true" ]; then
+            echo "to: 'leeconales@gmail.com'" >> email_info.txt
+            echo "subject: 'AEGIS API Endpoint Status'" >> email_info.txt
+            echo "body: 'The AEGIS API endpoint is not accessible. The API status is ${{ env.STATE }}. Please investigate.'" >> email_info.txt
+            echo "OUTPUT=$(cat email_info.txt)" >> $GITHUB_ENV
+          fi
+
+      - name: Send Email
+        if: env.send_email == 'true'
+        uses: cinotify/github-action@v1.6.0
+        env:
+          OUTPUT: ${{ env.OUTPUT }}
