@@ -2,7 +2,7 @@ on:
   schedule:
     - cron: '*/3 * * * *'
 
-name: Check AEGIS API Status
+name: Check API Status V2
 
 jobs:
   check_api_status:
