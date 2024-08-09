@@ -39,3 +39,4 @@ jobs:
         uses: cinotify/github-action@v1.6.0
         env:
           OUTPUT: ${{ steps.create_env_file.outputs.OUTPUT }}
+        
