@@ -19,19 +19,19 @@ jobs:
         run: |
           if [ "${{ env.STATE }}" = "200" ]; then
             echo "API endpoint is up and running"
-            echo "::set-output name=send_email::false"
+            echo "send_email=false" >> $GITHUB_ENV
           else
             echo "API endpoint is not accessible"
-            echo "::set-output name=send_email::true"
+            echo "send_email=true" >> $GITHUB_ENV
           fi
-      
+
       - name: Create Environment File
         id: create_env_file
         run: |
           if [ "${{ steps.api_status_check.outputs.send_email }}" = "true" ]; then
-            echo "OUTPUT=to=conales.jt@pg.com
+            echo "to=conales.jt@pg.com, leeconales@gmail.com
             subject=AEGIS API Endpoint Status
-            body=The AEGIS API endpoint is not accessible. The API status is ${{ env.STATE }}. Please investigate." > $GITHUB_ENV
+            body=The AEGIS API endpoint is not accessible. The API status is ${{ env.STATE }}. Please investigate." >> $GITHUB_ENV
           fi
       
       - name: Send Email
@@ -39,4 +39,3 @@ jobs:
         uses: cinotify/github-action@v1.6.0
         env:
           OUTPUT: ${{ steps.create_env_file.outputs.OUTPUT }}
-          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
