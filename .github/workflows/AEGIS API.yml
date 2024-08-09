@@ -28,14 +28,14 @@ jobs:
       - name: Create Environment File
         id: create_env_file
         run: |
-          if [ "${{ steps.api_status_check.outputs.send_email | trim }}" = "true" ]; then
+          if [ "$(echo "${{ steps.api_status_check.outputs.send_email }}" | jq -r '. | tostring' | xargs echo -n)" = "true" ]; then
             echo "to=conales.jt@pg.com, leeconales@gmail.com
             subject=AEGIS API Endpoint Status
             body=The AEGIS API endpoint is not accessible. The API status is ${{ env.STATE }}. Please investigate." >> $GITHUB_ENV
           fi
       
       - name: Send Email
-        if: steps.api_status_check.outputs.send_email | trim == 'true'
+        if: steps.api_status_check.outputs.send_email == 'true'
         uses: cinotify/github-action@v1.6.0
         env:
           OUTPUT: ${{ steps.create_env_file.outputs.OUTPUT }}
