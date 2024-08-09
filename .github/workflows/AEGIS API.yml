@@ -29,9 +29,9 @@ jobs:
         id: create_env_file
         run: |
           if [ "$(echo "${{ steps.api_status_check.outputs.send_email }}" | jq -r '. | tostring' | xargs echo -n)" = "true" ]; then
-            echo "to=conales.jt@pg.com, leeconales@gmail.com
-            subject=AEGIS API Endpoint Status
-            body=The AEGIS API endpoint is not accessible. The API status is ${{ env.STATE }}. Please investigate." >> $GITHUB_ENV
+            echo "to: conales.jt@pg.com, leeconales@gmail.com
+            subject: AEGIS API Endpoint Status
+            body: The AEGIS API endpoint is not accessible. The API status is ${{ env.STATE }}. Please investigate." >> $GITHUB_ENV
           fi
       
       - name: Send Email
