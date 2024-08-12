@@ -9,7 +9,7 @@ name: Check API Status Main
 env:
  NAME_OF_TOOL: AEGIS
  API_ENDPOINT: https://httpstat.us/404
- EMAIL_RECIPIENTS: conales.jt@pg.com, leeconales@gmail.com
+ EMAIL_RECIPIENTS: conales.jt@pg.com, leeconales@gmail.com, jumawan.js@pg.com, gbsg-fpt-it-ops-specialists@groups.pg.com
  
 jobs:
   check_api_status:
@@ -37,6 +37,6 @@ jobs:
         uses: cinotify/github-action@v1.6.0
         with:
           to: "${{ env.EMAIL_RECIPIENTS }}"
-          subject: "${{ env.NAME_OF_TOOL }} API Endpoint Status"
-          body: "The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. The API status is ${{ env.STATE }}. Please investigate."
+          subject: "[FPS Tools Availability Tacker] | ${{ env.NAME_OF_TOOL }} API Endpoint Status"
+          body: "The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. The HTTP status code is ${{ env.STATE }}. Please investigate. [THIS IS A TEST RUN FOR MULTIPLE EMAIL RECIPEINTS PLEASE IGNORE]"
           type: "text/html"
