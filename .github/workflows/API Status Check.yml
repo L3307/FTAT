@@ -1,6 +1,6 @@
 on:
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: '*/60 * * * *'
     
 # Use this file as a template to create new workflows for API endpoint status check
 name: Check API Status Main
@@ -9,7 +9,7 @@ name: Check API Status Main
 env:
  NAME_OF_TOOL: AEGIS
  API_ENDPOINT: https://httpstat.us/404
- EMAIL_RECIPIENTS: conales.jt@pg.com, leeconales@gmail.com, jumawan.js@pg.com, gbsg-fpt-it-ops-specialists@groups.pg.com
+ EMAIL_RECIPIENTS: conales.jt@pg.com
  
 jobs:
   check_api_status:
@@ -38,5 +38,5 @@ jobs:
         with:
           to: "${{ env.EMAIL_RECIPIENTS }}"
           subject: "[FPS Tools Availability Tacker] | ${{ env.NAME_OF_TOOL }} API Endpoint Status"
-          body: "The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. The HTTP status code is ${{ env.STATE }}. Please investigate. [THIS IS A TEST RUN FOR MULTIPLE EMAIL RECIPEINTS PLEASE IGNORE]"
+          body: "The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. The HTTP status code is ${{ env.STATE }}. Please investigate."
           type: "text/html"
