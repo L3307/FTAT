@@ -22,7 +22,7 @@ jobs:
         run: |
           response=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.API_ENDPOINT }})
           echo "STATE=${response}" >> $GITHUB_ENV
-          echo "DATETIME=${current_datetime}" >> $GITHUB_ENV
+          echo "DATETIME=$(date +"%Y-%m-%d %H:%M:%S")" >> $GITHUB_ENV
 
       - name: Use API Status
         id: api_status_check
