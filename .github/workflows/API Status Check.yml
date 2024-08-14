@@ -10,11 +10,19 @@ env:
  NAME_OF_TOOL: AEGIS
  API_ENDPOINT: https://httpstat.us/404
  EMAIL_RECIPIENTS: conales.jt@pg.com
- 
+
 jobs:
+      
   check_api_status:
     runs-on: ubuntu-latest
     steps:
+      #this step is used to check source IP address. Remove when no longer required
+      - name: 🛒 Checkout
+        uses: actions/checkout@v2
+      #this step is used to check source IP address. Remove when no longer required
+      - name: 🔎 Check IP
+        run: curl https://api.ipify.org
+        
       - name: Check API Status
         id: api_status
         run: |
