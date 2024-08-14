@@ -36,7 +36,7 @@ jobs:
             echo "send_email=true" >> $GITHUB_ENV
             echo "API_STATUS=down" >> $GITHUB_ENV
           fi
-          # Pass API_STATUS and DATETIME as outputs
+          # Pass API_STATUS as an output
           echo "::set-output name=api_status::$API_STATUS"
           echo "::set-output name=datetime::${DATETIME:-$(date +"%Y-%m-%d %H:%M:%S")}"
 
@@ -71,6 +71,9 @@ jobs:
           MONGODB_URI: ${{ secrets.MONGODB_CONNECTION_STRING }}
           DATABASE_NAME: FTATLogs
           COLLECTION_NAME: "FTAT Logs"
+          NAME: "${{ env.NAME_OF_TOOL }}"
+          STATUS: "${{ needs.ci.outputs.api_status }}"
+          DATETIME: "${{ needs.ci.outputs.datetime }}"
         run: |
           python -c "from pymongo import MongoClient; \
                      from datetime import datetime; \
@@ -79,7 +82,6 @@ jobs:
                      client = MongoClient(os.environ['MONGODB_URI']); \
                      db = client[os.environ['DATABASE_NAME']]; \
                      collection = db[os.environ['COLLECTION_NAME']]; \
-                     datetime_str = os.environ['DATETIME'] or datetime.now().strftime('%Y-%m-%d %H:%M:%S'); \
-                     document = {'name': '${{ env.NAME_OF_TOOL }}', 'status': '${{ needs.ci.outputs.api_status }}', 'datetime': datetime.strptime(datetime_str, '%Y-%m-%d %H:%M:%S')}; \
+                     document = {'name': os.environ['NAME'], 'status': os.environ['STATUS'], 'datetime': datetime.strptime(os.environ['DATETIME'], '%Y-%m-%d %H:%M:%S')}; \
                      collection.insert_one(document); \
                      print('Data inserted successfully.')"
