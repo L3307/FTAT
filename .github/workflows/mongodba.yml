@@ -1,9 +1,7 @@
 name: Insert Data into MongoDB
 
 on: 
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   insert-mongo-data:
