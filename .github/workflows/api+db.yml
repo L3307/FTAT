@@ -46,38 +46,37 @@ jobs:
           type: "text/html"
 
   insert-mongo-data:
-          runs-on: ubuntu-latest
-          steps:
-            - name: Checkout repository
-              uses: actions/checkout@v3
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-            - name: Set up Python
-              uses: actions/setup-python@v4
-              with:
-                python-version: '3.x'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
 
-            - name: Install dependencies
-              run: |
-                python -m pip install --upgrade pip
-                pip install pymongo
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pymongo
 
-            - name: Insert data into MongoDB
-              env:
-                MONGODB_URI: ${{ secrets.MONGODB_CONNECTION_STRING }}
-                DATABASE_NAME: FTATLogs
-                COLLECTION_NAME: FTAT Logs
-                NAME: "${{ env.NAME_OF_TOOL }}"
-                STATUS: "${{ env.API_STATUS }}"
-                DATETIME: "${{ env.DATETIME }}"
-                
-              run: |
-                python -c "from pymongo import MongoClient; \
-                           from datetime import datetime; \
-                           import os; \
-                           print('Connecting to MongoDB...'); \
-                           client = MongoClient(os.environ['MONGODB_URI']); \
-                           db = client[os.environ['DATABASE_NAME']]; \
-                           collection = db[os.environ['COLLECTION_NAME']]; \
-                           document = {'name': os.environ['NAME'], 'status': os.environ['STATUS'], 'datetime': datetime.strptime(os.environ['DATETIME'], '%Y-%m-%d %H:%M:%S')}; \
-                           collection.insert_one(document); \
-                           print('Data inserted successfully.')"
+      - name: Insert data into MongoDB
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_CONNECTION_STRING }}
+          DATABASE_NAME: FTATLogs
+          COLLECTION_NAME: "FTAT Logs"
+          NAME: "${{ env.NAME_OF_TOOL }}"
+          STATUS: "${{ env.API_STATUS }}"
+          DATETIME: "${{ env.DATETIME }}"
+        run: |
+          python -c "from pymongo import MongoClient; \
+                     from datetime import datetime; \
+                     import os; \
+                     print('Connecting to MongoDB...'); \
+                     client = MongoClient(os.environ['MONGODB_URI']); \
+                     db = client[os.environ['DATABASE_NAME']]; \
+                     collection = db[os.environ['COLLECTION_NAME']]; \
+                     document = {'name': os.environ['NAME'], 'status': os.environ['STATUS'], 'datetime': datetime.strptime(os.environ['DATETIME'], '%Y-%m-%d %H:%M:%S')}; \
+                     collection.insert_one(document); \
+                     print('Data inserted successfully.')"
