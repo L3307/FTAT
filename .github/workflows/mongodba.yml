@@ -1,24 +1,42 @@
-name: Run Once Workflow
+name: Insert Data into MongoDB
 
-on:
+on: 
   workflow_dispatch:
 
 jobs:
-  ci:
-    if: github.event_name == 'workflow_dispatch'
+  insert-mongo-data:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Set up MongoDB environment
-        env:
-          MONGODB_CONNECTION_STRING: ${{ secrets.MONGODB_CONNECTION_STRING }}
-        run: |
-          echo "MONGODB_CONNECTION_STRING=${MONGODB_CONNECTION_STRING}" >> $GITHUB_ENV
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Download MongoDB CLI
-        run: |
-          curl -LO https://fastdl.mongodb.org/linux/mongodb-shell-linux-x86_64-ubuntu2004-5.0.2.deb
-          sudo dpkg -i mongodb-shell-linux-x86_64-ubuntu2004-5.0.2.deb
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
 
-      - name: Connect to MongoDB Atlas and add document
-        run: |
-          mongo $MONGODB_CONNECTION_STRING --eval "use FTATLogs; db.FTATLogs.insertOne({ Name: 'Aegis', Status: 'Ok', DateTime: '8/14/2024 17:34' })"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pymongo
+
+    - name: Insert data into MongoDB
+      env:
+        MONGODB_URI: ${{ secrets.MONGODB_CONNECTION_STRING }}
+        DATABASE_NAME: FTATLogs
+        COLLECTION_NAME: FTAT Logs
+        NAME: "Aegis"
+        STATUS: "active"
+        DATETIME: "2024-08-14 19:15:00"
+        
+      run: |
+        python -c "from pymongo import MongoClient; \
+                   from datetime import datetime; \
+                   import os; \
+                   client = MongoClient(os.environ['MONGODB_URI']); \
+                   db = client[os.environ['DATABASE_NAME']]; \
+                   collection = db[os.environ['COLLECTION_NAME']]; \
+                   document = {'name': os.environ['NAME'], 'status': os.environ['STATUS'], 'date': datetime.strptime(os.environ['DATETIME'], '%Y-%m-%d %H:%M:%S')}; \
+                   collection.insert_one(document); \
+                   print('Data inserted successfully.')"
