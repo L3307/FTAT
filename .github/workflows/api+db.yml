@@ -5,7 +5,7 @@ on:
   # - cron: '*/60 * * * *'
 
 # Use this file as a template to create new workflows for API endpoint status check
-name: Check API Status Main
+name: Check API Status and add data to DB
 
 # Declare the variables
 env:
