@@ -1,0 +1,24 @@
+name: MongoDB Atlas Connection
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ci:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up MongoDB environment
+        env:
+          MONGODB_CONNECTION_STRING: ${{ secrets.MONGODB_CONNECTION_STRING }}
+        run: |
+          echo "MONGODB_CONNECTION_STRING=${MONGODB_CONNECTION_STRING}" >> $GITHUB_ENV
+
+      - name: Install MongoDB CLI
+        run: |
+          curl -LO https://downloads.mongodb.com/on-prem-mms/deb/mongodb-mms_6.4.4.5027-1_amd64.deb
+          sudo dpkg -i mongodb-mms_6.4.4.5027-1_amd64.deb
+
+      - name: Connect to MongoDB Atlas and add document
+        run: |
+          mongo $MONGODB_CONNECTION_STRING --eval "use FTATLogs; db.FTATLogs.insertOne({ Name: 'Aegis', Status: 'Ok', DateTime: '8/14/2024 17:34' })"
