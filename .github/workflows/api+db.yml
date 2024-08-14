@@ -36,9 +36,9 @@ jobs:
             echo "send_email=true" >> $GITHUB_ENV
             echo "API_STATUS=down" >> $GITHUB_ENV
           fi
-          # Pass API_STATUS as an output
+          # Pass API_STATUS and DATETIME as outputs
           echo "::set-output name=api_status::$API_STATUS"
-          echo "::set-output name=datetime::${DATETIME:-$(date +"%Y-%m-%d %H:%M:%S")}"
+          echo "::set-output name=datetime::$DATETIME"
 
       - name: Send Email
         if: env.send_email == 'true'
