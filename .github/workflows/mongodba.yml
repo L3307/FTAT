@@ -16,9 +16,12 @@ jobs:
 
       - name: Install MongoDB CLI
         run: |
-          curl -LO https://downloads.mongodb.com/on-prem-mms/deb/mongodb-mms_6.4.4.5027-1_amd64.deb
-          sudo dpkg -i mongodb-mms_6.4.4.5027-1_amd64.deb
+          sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 68818C72E52529D4
+          echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
+          sudo apt-get update
+          sudo apt-get install -y mongodb-org-shell
 
       - name: Connect to MongoDB Atlas and add document
         run: |
           mongo $MONGODB_CONNECTION_STRING --eval "use FTATLogs; db.FTATLogs.insertOne({ Name: 'Aegis', Status: 'Ok', DateTime: '8/14/2024 17:34' })"
+ 
