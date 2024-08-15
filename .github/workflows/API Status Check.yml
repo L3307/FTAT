@@ -27,7 +27,7 @@ jobs:
       - name: Check API Status
         id: api_status
         run: |
-          response=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.API_ENDPOINT }})
+          response=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.API_ENDPOINT }} )
           echo "STATE=${response}" >> $GITHUB_ENV
 
       - name: Use API Status
