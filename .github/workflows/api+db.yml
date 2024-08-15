@@ -23,10 +23,11 @@ jobs:
           response=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.API_ENDPOINT }})
           echo "STATE=${response}" >> $GITHUB_ENV
           echo "DATETIME=$(date +"%Y-%m-%d %H:%M:%S")" >> $GITHUB_ENV
-          echo "API_STATUS=${{ env.STATE }}" > $GITHUB_ENV
 
-      - name: Debug DATETIME
-        run: echo "DATETIME=${{ env.DATETIME }}"
+      - name: Debug STATUS and DATETIME
+        run: |
+          echo "STATUS=${{ env.STATE }}"
+          echo "DATETIME=${{ env.DATETIME }}"
 
       - name: Use API Status
         id: api_status_check
@@ -40,18 +41,6 @@ jobs:
             echo "send_email=true" >> $GITHUB_ENV
             echo "API_STATUS=down" >> $GITHUB_ENV
           fi
-          # Set output via environment file
-          echo "api_status=${{ env.API_STATUS }}" >> $GITHUB_ENV
-          echo "datetime=${{ env.DATETIME }}" >> $GITHUB_ENV
-
-      - name: Send Email
-        if: env.send_email == 'true'
-        uses: cinotify/github-action@v1.6.0
-        with:
-          to: "${{ env.EMAIL_RECIPIENTS }}"
-          subject: "[FPS Tools Availability Tracker] | ${{ env.NAME_OF_TOOL }} API Endpoint Status"
-          body: "The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. The HTTP status code is ${{ env.STATE }}. Please investigate."
-          type: "text/html"
 
   insert-mongo-data:
     needs: ci
@@ -65,10 +54,10 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install dependencies
+      - name: Debug STATUS and DATETIME before MongoDB Insertion
         run: |
-          python -m pip install --upgrade pip
-          pip install pymongo
+          echo "STATUS=${{ needs.ci.outputs.api_status }}"
+          echo "DATETIME=${{ needs.ci.outputs.datetime }}"
 
       - name: Insert data into MongoDB
         env:
@@ -76,8 +65,8 @@ jobs:
           DATABASE_NAME: FTATLogs
           COLLECTION_NAME: "FTAT Logs"
           NAME: "${{ env.NAME_OF_TOOL }}"
-          STATUS: "${{ env.API_STATUS }}"
-          DATETIME: "${{ env.DATETIME }}"
+          STATUS: "${{ needs.ci.outputs.api_status }}"
+          DATETIME: "${{ needs.ci.outputs.datetime }}"
         run: |
           python -c "from pymongo import MongoClient; \
           from datetime import datetime; \
@@ -86,10 +75,7 @@ jobs:
           client = MongoClient(os.environ['MONGODB_URI']); \
           db = client[os.environ['DATABASE_NAME']]; \
           collection = db[os.environ['COLLECTION_NAME']]; \
-          if os.environ['DATETIME']: \
-            dt = datetime.strptime(os.environ['DATETIME'], '%Y-%m-%d %H:%M:%S') \
-          else: \
-            dt = datetime.now() \
+          dt = datetime.strptime(os.environ['DATETIME'], '%Y-%m-%d %H:%M:%S') if os.environ['DATETIME'] else datetime.now(); \
           document = {'name': os.environ['NAME'], 'status': os.environ['STATUS'], 'datetime': dt}; \
           collection.insert_one(document); \
           print('Data inserted successfully.')"
