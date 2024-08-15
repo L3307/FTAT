@@ -25,14 +25,10 @@ jobs:
         echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
         if [ "${response}" = "200" ]; then
           echo "API_STATUS=active" >> $GITHUB_ENV
-          echo "::set-output name=API_STATUS::active"
         else
           echo "API_STATUS=down" >> $GITHUB_ENV
-          echo "::set-output name=API_STATUS::down"
         fi
-        # Set outputs
-        echo "::set-output name=DATETIME::${DATETIME}"
-        echo "::set-output name=STATE::${response}"
+        
     - name: Use API Status
       id: use_api_status
       run: |
@@ -71,8 +67,8 @@ jobs:
         DATABASE_NAME: FTATLogs
         COLLECTION_NAME: "FTAT Logs"
         NAME: "${{ env.NAME_OF_TOOL }}"
-        STATUS: "${{ needs.ci.outputs.API_STATUS }}"
-        DATETIME: "${{ needs.ci.outputs.DATETIME }}"
+        STATUS: "${{ env.API_STATUS }}"
+        DATETIME: "${{ env.DATETIME }}"
       run: |
         python -c "from pymongo import MongoClient; \
         from datetime import datetime; \
