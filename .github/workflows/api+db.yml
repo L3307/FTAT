@@ -10,6 +10,8 @@ env:
   API_ENDPOINT: https://httpstat.us/404
   EMAIL_RECIPIENTS: conales.jt@pg.com
   TIMEZONE: "Asia/Singapore"
+  DB_NAME: FTATLogs
+  CN_NAME: "FTAT Logs"
 
 jobs:
   ci:
@@ -64,8 +66,8 @@ jobs:
     - name: Insert data into MongoDB
       env:
         MONGODB_URI: ${{ secrets.MONGODB_CONNECTION_STRING }}
-        DATABASE_NAME: FTATLogs
-        COLLECTION_NAME: "FTAT Logs"
+        DATABASE_NAME: "${{ env.DB_NAME }}"
+        COLLECTION_NAME: "${{ env.CN_NAME }}"
         NAME: "${{ env.NAME_OF_TOOL }}"
         STATUS: Active
         DATETIME: "8/15/2024 18:14:00"
