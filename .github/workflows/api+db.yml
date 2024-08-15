@@ -8,7 +8,6 @@ on:
 name: Check API Status and add data to DB
 
 # Declare the variables
-
 env:
   NAME_OF_TOOL: AEGIS
   API_ENDPOINT: https://httpstat.us/404
