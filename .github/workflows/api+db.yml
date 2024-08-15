@@ -24,23 +24,10 @@ jobs:
           echo "STATE=${response}" >> $GITHUB_ENV
           echo "DATETIME=$(date +"%Y-%m-%d %H:%M:%S")" >> $GITHUB_ENV
 
-      - name: Debug STATUS and DATETIME
+      - name: Set Output Variables
         run: |
-          echo "STATUS=${{ env.STATE }}"
-          echo "DATETIME=${{ env.DATETIME }}"
-
-      - name: Use API Status
-        id: api_status_check
-        run: |
-          if [ "${{ env.STATE }}" = "200" ]; then
-            echo "API endpoint is up and running"
-            echo "send_email=false" >> $GITHUB_ENV
-            echo "API_STATUS=active" >> $GITHUB_ENV
-          else
-            echo "API endpoint is not accessible"
-            echo "send_email=true" >> $GITHUB_ENV
-            echo "API_STATUS=down" >> $GITHUB_ENV
-          fi
+          echo "::set-output name=api_status::${{ env.STATE }}"
+          echo "::set-output name=datetime::${{ env.DATETIME }}"
 
   insert-mongo-data:
     needs: ci
@@ -54,10 +41,9 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Debug STATUS and DATETIME before MongoDB Insertion
+      - name: Install pymongo
         run: |
-          echo "STATUS=${{ needs.ci.outputs.api_status }}"
-          echo "DATETIME=${{ needs.ci.outputs.datetime }}"
+          pip install pymongo
 
       - name: Insert data into MongoDB
         env:
