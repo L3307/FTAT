@@ -32,6 +32,7 @@ jobs:
           echo "API_STATUS=${API_STATUS}" > variables.txt
           echo "DATETIME=${DATETIME}" >> variables.txt
           echo "STATE=${response}" >> variables.txt
+          
       - name: Upload environment variables
         uses: actions/upload-artifact@v4
         with:
@@ -71,11 +72,19 @@ jobs:
           name: env-vars
           path: .
 
+      - name: Debug Print variables.txt contents
+        run: cat variables.txt
+
       - name: Set environment variables
         run: |
           source variables.txt
           echo "API_STATUS=${API_STATUS}" >> $GITHUB_ENV
           echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
+
+      - name: Debug Print environment variables
+        run: |
+          echo "API_STATUS=${API_STATUS}"
+          echo "DATETIME=${DATETIME}"
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -83,8 +92,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install pymongo
-        run: |
-          pip install pymongo
+        run: pip install pymongo
 
       - name: Insert data into MongoDB
         env:
