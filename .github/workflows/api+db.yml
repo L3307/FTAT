@@ -67,8 +67,8 @@ jobs:
         DATABASE_NAME: FTATLogs
         COLLECTION_NAME: "FTAT Logs"
         NAME: "${{ env.NAME_OF_TOOL }}"
-        STATUS: "${{ env.API_STATUS }}"
-        DATETIME: "${{ env.DATETIME }}"
+        STATUS: Active
+        DATETIME: "8/15/2024 18:14:00"
       run: |
         python -c "from pymongo import MongoClient; \
         from datetime import datetime; \
