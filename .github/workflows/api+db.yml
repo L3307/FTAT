@@ -63,40 +63,35 @@ jobs:
           to: "${{ env.EMAIL_RECIPIENTS }}"
           subject: "[FPS Tools Availability Tracker] | ${{ env.NAME_OF_TOOL }} API Endpoint Status"
           body:  |
-              <!DOCTYPE html>
-              <html>
-              <head>
-                  <style>
-                      body {
-                          background-color: #EAF2F8;
-                          margin: 0;
-                          padding: 0;
-                      }
-        
-                      .container {
-                          background-color: #FFFFFF;
-                          margin: 20px auto;
-                          max-width: 500px;
-                          padding: 20px;
-                      }
-        
-                      h2 {
-                          color: #004B9B;
-                      }
-        
-                      p {
-                          color: #000000;
-                      }
-                  </style>
-              </head>
-              <body>
-                  <div class="container">
-                      <h2>The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. Please investigate.</h2>
-                      <p>HTTP status code: ${{ env.STATE }}</p>
-                      <p>Time of access: ${{ env.DATETIME }}</p>
-                  </div>
-              </body>
-              </html>
+                 body: |
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <style>
+                            .warning-sign {
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                width: 200px;
+                                height: 200px;
+                                background-color: #FFCC00;
+                                border-radius: 50%;
+                                border: 2px solid #FF0000;
+                                color: #FF0000;
+                                font-size: 60px;
+                                font-weight: bold;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="warning-sign">!</div>
+                        <div>
+                            <h2>The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. Please investigate.</h2>
+                            <h1>HTTP status code: ${{ env.STATE }}</h1>
+                            <h1>Time of access: ${{ env.DATETIME }}</h1>
+                        </div>
+                    </body>
+                    </html>
           type: "text/html"
 
   insert-mongo-data:
