@@ -34,8 +34,6 @@ jobs:
         fi
 
         # Set outputs
-        echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
-        echo "API_STATUS=${response}" >> $GITHUB_ENV
         echo "::set-output name=DATETIME::${DATETIME}"
         echo "::set-output name=API_STATUS::${response}"
 
@@ -48,6 +46,7 @@ jobs:
           echo "send_email=true" >> $GITHUB_ENV
         else
           echo "send_email=false" >> $GITHUB_ENV
+        fi
 
     - name: Send Email
       if: env.send_email == 'true'
@@ -107,4 +106,3 @@ jobs:
         document = {'name': os.environ['NAME'], 'status': os.environ['STATUS'], 'datetime': dt}; \
         collection.insert_one(document); \
         print('Data inserted successfully.')"
-
