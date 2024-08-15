@@ -32,6 +32,7 @@ jobs:
           else
             echo "API_STATUS=down" >> $GITHUB_ENV
           fi
+          
       - name: Use API Status
         id: use_api_status
         run: |
@@ -42,6 +43,16 @@ jobs:
           else
             echo "send_email=false" >> $GITHUB_ENV
           fi
+          
+          - name: Send Email
+            if: env.send_email == 'true'
+            uses: cinotify/github-action@v1.6.0
+            with:
+              to: "${{ env.EMAIL_RECIPIENTS }}"
+              subject: "[FPS Tools Availability Tacker] | ${{ env.NAME_OF_TOOL }} API Endpoint Status"
+              body: "The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. The HTTP status code is ${{ env.STATE }}. Please investigate."
+              type: "text/html"
+          
   insert-mongo-data:
     needs: ci
     runs-on: ubuntu-latest
