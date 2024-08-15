@@ -69,8 +69,8 @@ jobs:
         DATABASE_NAME: "${{ env.DB_NAME }}"
         COLLECTION_NAME: "${{ env.CN_NAME }}"
         NAME: "${{ env.NAME_OF_TOOL }}"
-        STATUS: $API_STATUS
-        DATETIME: $DATETIME
+        STATUS: echo "$API_STATUS"
+        DATETIME: echo "$DATETIME"
       run: |
         python -c "from pymongo import MongoClient; \
         from datetime import datetime; \
