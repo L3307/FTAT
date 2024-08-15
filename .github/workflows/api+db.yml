@@ -27,18 +27,15 @@ jobs:
         DATETIME=$(date +"%Y-%m-%d %H:%M:%S")
         echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
 
-        # Save state and set output using environment files
+        # Set outputs using environment files
         echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
         echo "API_STATUS=${response}" >> $GITHUB_ENV
 
-        # Save state to environment files for use in subsequent steps
+        # Set outputs using environment files for use in subsequent steps
         echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
         echo "API_STATUS=${response}" >> $GITHUB_ENV
-
-    - name: Save Outputs to Environment Files
-      run: |
-        echo "DATETIME=${{ env.DATETIME }}" >> $GITHUB_ENV
-        echo "API_STATUS=${{ env.STATE }}" >> $GITHUB_ENV
+        echo "::set-output name=DATETIME::${DATETIME}"
+        echo "::set-output name=API_STATUS::${response}"
 
   insert-mongo-data:
     needs: ci
@@ -63,8 +60,8 @@ jobs:
         DATABASE_NAME: FTATLogs
         COLLECTION_NAME: "FTAT Logs"
         NAME: "${{ env.NAME_OF_TOOL }}"
-        STATUS: "${{ env.API_STATUS }}"
-        DATETIME: "${{ env.DATETIME }}"
+        STATUS: "${{ needs.ci.outputs.API_STATUS }}"
+        DATETIME: "${{ needs.ci.outputs.DATETIME }}"
       run: |
         python -c "from pymongo import MongoClient; \
         from datetime import datetime; \
