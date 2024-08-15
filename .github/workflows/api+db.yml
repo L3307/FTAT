@@ -1,5 +1,3 @@
-name: Check API Status and add data to DB
-
 # Use workflow dispatch for manual triggering and schedule for timed execution
 on:
   workflow_dispatch:
@@ -16,18 +14,15 @@ env:
 jobs:
   ci:
     runs-on: ubuntu-latest
-
     steps:
     - name: Check API Status
       id: check_api_status
       run: |
         response=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.API_ENDPOINT }})
         echo "STATE=${response}" >> $GITHUB_ENV
-
-        # Set the time to SGT
-        DATETIME=$(TZ=${{ env.TIMEZONE }} date +"%Y-%m-%d %H:%M:%S")
+        # Capture the current date and time using dedicated command
+        DATETIME=$(date --utc --iso-8601=seconds)
         echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
-
         if [ "${response}" = "200" ]; then
           echo "API_STATUS=active" >> $GITHUB_ENV
           echo "::set-output name=API_STATUS::active"
@@ -35,11 +30,9 @@ jobs:
           echo "API_STATUS=down" >> $GITHUB_ENV
           echo "::set-output name=API_STATUS::down"
         fi
-
         # Set outputs
         echo "::set-output name=DATETIME::${DATETIME}"
         echo "::set-output name=STATE::${response}"
-
     - name: Use API Status
       id: use_api_status
       run: |
@@ -50,7 +43,6 @@ jobs:
         else
           echo "send_email=false" >> $GITHUB_ENV
         fi
-
     - name: Send Email
       if: env.send_email == 'true'
       uses: cinotify/github-action@v1.6.0
@@ -63,20 +55,16 @@ jobs:
   insert-mongo-data:
     needs: ci
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.x'
-
     - name: Install pymongo
       run: |
         pip install pymongo
-
     - name: Insert data into MongoDB
       env:
         MONGODB_URI: ${{ secrets.MONGODB_CONNECTION_STRING }}
@@ -93,7 +81,8 @@ jobs:
         client = MongoClient(os.environ['MONGODB_URI']); \
         db = client[os.environ['DATABASE_NAME']]; \
         collection = db[os.environ['COLLECTION_NAME']]; \
-        dt = datetime.strptime(os.environ['DATETIME'], '%Y-%m-%d %H:%M:%S'); \
+        # Parse the datetime string retrieved in UTC format
+        dt = datetime.fromisoformat(os.environ['DATETIME']); \
         document = {'name': os.environ['NAME'], 'status': os.environ['STATUS'], 'datetime': dt}; \
         collection.insert_one(document); \
         print('Data inserted successfully.')"
