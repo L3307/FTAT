@@ -1,11 +1,10 @@
+name: Check API Status and add data to DB
+
+# Use workflow dispatch for manual triggering and schedule for timed execution
 on:
-  # Use workflow dispatch for manual triggering and schedule for timed execution
   workflow_dispatch:
   # schedule:
   # - cron: '*/60 * * * *'
-
-# Use this file as a template to create new workflows for API endpoint status check
-name: Check API Status and add data to DB
 
 # Declare the variables
 env:
@@ -17,86 +16,95 @@ env:
 jobs:
   ci:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Check API Status
-        id: check_api_status
-        run: |
-          response=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.API_ENDPOINT }})
-          echo "STATE=${response}" >> $GITHUB_ENV
-          
-          # Set the time to SGT
-          DATETIME=$(TZ=${{ env.TIMEZONE }} date +"%Y-%m-%d %H:%M:%S")
-          echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
-          if [ "${response}" = "200" ]; then
-            echo "API_STATUS=active" >> $GITHUB_ENV
-          else
-            echo "API_STATUS=down" >> $GITHUB_ENV
-          fi
-          
-      - name: Use API Status
-        id: use_api_status
-        run: |
-          echo "API Status is: ${{ env.API_STATUS }}"
-          if [ "${{ env.STATE }}" != "200" ]; then
-            echo "API endpoint is not accessible"
-            echo "send_email=true" >> $GITHUB_ENV
-          else
-            echo "send_email=false" >> $GITHUB_ENV
-          fi
-          
-          - name: Send Email
-            if: env.send_email == 'true'
-            uses: cinotify/github-action@v1.6.0
-            with:
-              to: "${{ env.EMAIL_RECIPIENTS }}"
-              subject: "[FPS Tools Availability Tacker] | ${{ env.NAME_OF_TOOL }} API Endpoint Status"
-              body: "The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. The HTTP status code is ${{ env.STATE }}. Please investigate."
-              type: "text/html"
-          
+    - name: Check API Status
+      id: check_api_status
+      run: |
+        response=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.API_ENDPOINT }})
+        echo "STATE=${response}" >> $GITHUB_ENV
+
+        # Set the time to SGT
+        DATETIME=$(TZ=${{ env.TIMEZONE }} date +"%Y-%m-%d %H:%M:%S")
+        echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
+        if [ "${response}" = "200" ]; then
+          echo "API_STATUS=active" >> $GITHUB_ENV
+        else
+          echo "API_STATUS=down" >> $GITHUB_ENV
+        fi
+
+        # Set outputs
+        echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
+        echo "API_STATUS=${response}" >> $GITHUB_ENV
+        echo "::set-output name=DATETIME::${DATETIME}"
+        echo "::set-output name=API_STATUS::${response}"
+
+    - name: Use API Status
+      id: use_api_status
+      run: |
+        echo "API Status is: ${{ env.API_STATUS }}"
+        if [ "${{ env.STATE }}" != "200" ]; then
+          echo "API endpoint is not accessible"
+          echo "send_email=true" >> $GITHUB_ENV
+        else
+          echo "send_email=false" >> $GITHUB_ENV
+
+    - name: Send Email
+      if: env.send_email == 'true'
+      uses: cinotify/github-action@v1.6.0
+      with:
+        to: "${{ env.EMAIL_RECIPIENTS }}"
+        subject: "[FPS Tools Availability Tacker] | ${{ env.NAME_OF_TOOL }} API Endpoint Status"
+        body: "The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. The HTTP status code is ${{ env.STATE }}. Please investigate."
+        type: "text/html"
+
   insert-mongo-data:
     needs: ci
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
 
-      - name: Install pymongo
-        run: |
-          pip install pymongo
-      - name: Ensure Environment Variables
-        run: |
-          if [ -z "${{ env.API_STATUS }}" ]; then
-            echo "API_STATUS=unknown" >> $GITHUB_ENV
-          fi
-          if [ -z "${{ env.DATETIME }}" ]; then
-            DATETIME=$(TZ=${{ env.TIMEZONE }} date +"%Y-%m-%d %H:%M:%S")
-            echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
-          fi
-        env:
-          TIMEZONE: "Asia/Singapore"
+    - name: Install pymongo
+      run: |
+        pip install pymongo
 
-      - name: Insert data into MongoDB
-        env:
-          MONGODB_URI: ${{ secrets.MONGODB_CONNECTION_STRING }}
-          DATABASE_NAME: FTATLogs
-          COLLECTION_NAME: "FTAT Logs"
-          NAME: "${{ env.NAME_OF_TOOL }}"
-          STATUS: "${{ env.API_STATUS }}"
-          DATETIME: "${{ env.DATETIME }}"
-        run: |
-          python -c "from pymongo import MongoClient; \
-          from datetime import datetime; \
-          import os; \
-          print('Connecting to MongoDB...'); \
-          client = MongoClient(os.environ['MONGODB_URI']); \
-          db = client[os.environ['DATABASE_NAME']]; \
-          collection = db[os.environ['COLLECTION_NAME']]; \
-          dt = datetime.strptime(os.environ['DATETIME'], '%Y-%m-%d %H:%M:%S'); \
-          document = {'name': os.environ['NAME'], 'status': os.environ['STATUS'], 'datetime': dt}; \
-          collection.insert_one(document); \
-          print('Data inserted successfully.')"
+    - name: Ensure Environment Variables
+      run: |
+        if [ -z "${{ env.API_STATUS }}" ]; then
+          echo "API_STATUS=unknown" >> $GITHUB_ENV
+        fi
+        if [ -z "${{ env.DATETIME }}" ]; then
+          DATETIME=$(TZ=${{ env.TIMEZONE }} date +"%Y-%m-%d %H:%M:%S")
+          echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
+        fi
+      env:
+        TIMEZONE: "Asia/Singapore"
+
+    - name: Insert data into MongoDB
+      env:
+        MONGODB_URI: ${{ secrets.MONGODB_CONNECTION_STRING }}
+        DATABASE_NAME: FTATLogs
+        COLLECTION_NAME: "FTAT Logs"
+        NAME: "${{ env.NAME_OF_TOOL }}"
+        STATUS: "${{ needs.ci.outputs.API_STATUS }}"
+        DATETIME: "${{ needs.ci.outputs.DATETIME }}"
+      run: |
+        python -c "from pymongo import MongoClient; \
+        from datetime import datetime; \
+        import os; \
+        print('Connecting to MongoDB...'); \
+        client = MongoClient(os.environ['MONGODB_URI']); \
+        db = client[os.environ['DATABASE_NAME']]; \
+        collection = db[os.environ['COLLECTION_NAME']]; \
+        dt = datetime.strptime(os.environ['DATETIME'], '%Y-%m-%d %H:%M:%S'); \
+        document = {'name': os.environ['NAME'], 'status': os.environ['STATUS'], 'datetime': dt}; \
+        collection.insert_one(document); \
+        print('Data inserted successfully.')"
+
