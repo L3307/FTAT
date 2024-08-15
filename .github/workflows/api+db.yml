@@ -1,4 +1,5 @@
 name: Check API Status and add data to DB
+
 # Use workflow dispatch for manual triggering and schedule for timed execution
 on:
   workflow_dispatch:
@@ -29,13 +30,15 @@ jobs:
         # Save state and set output using environment files
         echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
         echo "API_STATUS=${response}" >> $GITHUB_ENV
-        echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
 
         # Save state to environment files for use in subsequent steps
-        echo "${DATETIME}" > $GITHUB_ENV/DATETIME
-        echo "${response}" > $GITHUB_ENV/API_STATUS
-        echo "::set-env name=DATETIME::${DATETIME}"
-        echo "::set-env name=API_STATUS::${response}"
+        echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
+        echo "API_STATUS=${response}" >> $GITHUB_ENV
+
+    - name: Save Outputs to Environment Files
+      run: |
+        echo "DATETIME=${{ env.DATETIME }}" >> $GITHUB_ENV
+        echo "API_STATUS=${{ env.STATE }}" >> $GITHUB_ENV
 
   insert-mongo-data:
     needs: ci
@@ -60,8 +63,8 @@ jobs:
         DATABASE_NAME: FTATLogs
         COLLECTION_NAME: "FTAT Logs"
         NAME: "${{ env.NAME_OF_TOOL }}"
-        STATUS: "${{ needs.ci.outputs.API_STATUS }}"
-        DATETIME: "${{ needs.ci.outputs.DATETIME }}"
+        STATUS: "${{ env.API_STATUS }}"
+        DATETIME: "${{ env.DATETIME }}"
       run: |
         python -c "from pymongo import MongoClient; \
         from datetime import datetime; \
