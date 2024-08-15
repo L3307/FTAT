@@ -76,7 +76,7 @@ jobs:
                           .container {
                               background-color: #FFFFFF;
                               margin: 20px auto;
-                              max-width: 500px;
+                              max-width: 350px;
                               padding: 20px;
                               border-style: solid;
                             border-color: #004B9B;
@@ -98,9 +98,9 @@ jobs:
                   <body>
                       <div class="container">
                           <span style="font-size: 70px; color: #EED202;">⚠</span>
-                          <h1>The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. Please investigate.</h1>
-                          <h2>HTTP status code: ${{ env.STATE }}</h2>
-                          <h2>Time of access: ${{ env.DATETIME }}</h2>
+                          <h1>  The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. Please investigate.</h1>
+                          <h2>  HTTP status code: ${{ env.STATE }}</h2>
+                          <h2>  Time of access: ${{ env.DATETIME }}</h2>
                       </div>
                   </body>
                   </html>
