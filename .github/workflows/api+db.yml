@@ -21,10 +21,12 @@ jobs:
         run: |
           response=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.API_ENDPOINT }})
           echo "STATE=${response}" >> $GITHUB_ENV
+          
           # Set timezone to SGT and capture date and time
-          TZ=Asia/Singapore
+          export TZ=Asia/Singapore
           DATETIME=$(date '+%m/%d/%Y %H:%M:%S')
           echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
+          
           if [ "${response}" = "200" ]; then
             API_STATUS="active"
           else
