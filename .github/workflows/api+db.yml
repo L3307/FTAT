@@ -59,7 +59,7 @@ jobs:
         with:
           to: "${{ env.EMAIL_RECIPIENTS }}"
           subject: "[FPS Tools Availability Tracker] | ${{ env.NAME_OF_TOOL }} API Endpoint Status"
-          body: "The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. The HTTP status code is ${{ env.STATE }}. Please investigate."
+          body: "The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. Please investigate. \n\nHTTP status code: ${{ env.STATE }}\n Time of access: ${{ env.DATETIME }}"
           type: "text/html"
 
   insert-mongo-data:
