@@ -24,20 +24,21 @@ jobs:
       run: |
         response=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.API_ENDPOINT }})
         echo "STATE=${response}" >> $GITHUB_ENV
-    
+
         # Set the time to SGT
         DATETIME=$(TZ=${{ env.TIMEZONE }} date +"%Y-%m-%d %H:%M:%S")
         echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
-    
+
         if [ "${response}" = "200" ]; then
-          echo "API_STATUS=active" >> $GITHUB_ENV
+          API_STATUS="active"
         else
-          echo "API_STATUS=down" >> $GITHUB_ENV
+          API_STATUS="down"
         fi
-    
-        # Set outputs
-        echo "::set-output name=DATETIME::${DATETIME}"
-        echo "::set-output name=API_STATUS::${API_STATUS}"
+        echo "API_STATUS=${API_STATUS}" >> $GITHUB_ENV
+
+        # Set outputs using environment files
+        echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
+        echo "API_STATUS=${API_STATUS}" >> $GITHUB_ENV
 
     - name: Use API Status
       id: use_api_status
@@ -72,8 +73,8 @@ jobs:
         DATABASE_NAME: FTATLogs
         COLLECTION_NAME: "FTAT Logs"
         NAME: ${{ env.NAME_OF_TOOL }}
-        STATUS: ${{ steps.check_api_status.outputs.API_STATUS }}
-        DATETIME: ${{ steps.check_api_status.outputs.DATETIME }}
+        STATUS: ${{ env.API_STATUS }}
+        DATETIME: ${{ env.DATETIME }}
       run: |
         python -c "from pymongo import MongoClient; \
         from datetime import datetime; \
