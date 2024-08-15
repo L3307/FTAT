@@ -27,7 +27,6 @@ jobs:
         # Set the time to SGT
         DATETIME=$(TZ=${{ env.TIMEZONE }} date +"%Y-%m-%d %H:%M:%S")
         echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
-        echo "::set-output name=DATETIME::${DATETIME}"
 
         if [ "${response}" = "200" ]; then
           echo "API_STATUS=active" >> $GITHUB_ENV
@@ -36,6 +35,10 @@ jobs:
           echo "API_STATUS=down" >> $GITHUB_ENV
           echo "::set-output name=API_STATUS::down"
         fi
+
+        # Set outputs
+        echo "::set-output name=DATETIME::${DATETIME}"
+        echo "::set-output name=STATE::${response}"
 
     - name: Use API Status
       id: use_api_status
