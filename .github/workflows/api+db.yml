@@ -28,10 +28,8 @@ jobs:
           else
             echo "API_STATUS=down" >> $GITHUB_ENV
           fi
-          # Save environment variables to a file
           echo "API_STATUS=${API_STATUS}" > variables.txt
           echo "DATETIME=${DATETIME}" >> variables.txt
-          echo "STATE=${response}" >> variables.txt
       - name: Upload environment variables
         uses: actions/upload-artifact@v3
         with:
@@ -41,7 +39,7 @@ jobs:
       - name: Use API Status
         id: use_api_status
         run: |
-          echo "API Status is: ${{ steps.check_api_status.outputs.API_STATUS }}"
+          echo "API Status is: ${{ env.API_STATUS }}"
           if [ "${{ env.STATE }}" != "200" ]; then
             echo "API endpoint is not accessible"
             echo "send_email=true" >> $GITHUB_ENV
