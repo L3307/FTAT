@@ -1,18 +1,15 @@
+name: Check API Status and add data to DB
+# Use workflow dispatch for manual triggering and schedule for timed execution
 on:
-  # Use workflow dispatch for manual triggering and schedule for timed execution
   workflow_dispatch:
   # schedule:
   # - cron: '*/60 * * * *'
-
-# Use this file as a template to create new workflows for API endpoint status check
-name: Check API Status and add data to DB
 
 # Declare the variables
 env:
   NAME_OF_TOOL: AEGIS
   API_ENDPOINT: https://httpstat.us/404
   EMAIL_RECIPIENTS: conales.jt@pg.com
-  TIMEZONE: "Asia/Singapore"
 
 jobs:
   ci:
@@ -25,30 +22,20 @@ jobs:
         response=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.API_ENDPOINT }})
         echo "STATE=${response}" >> $GITHUB_ENV
 
-        # Set the time to SGT
-        DATETIME=$(TZ=${{ env.TIMEZONE }} date +"%Y-%m-%d %H:%M:%S")
+        # Set the time
+        DATETIME=$(date +"%Y-%m-%d %H:%M:%S")
         echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
 
-        if [ "${response}" = "200" ]; then
-          API_STATUS="active"
-        else
-          API_STATUS="down"
-        fi
-        echo "API_STATUS=${API_STATUS}" >> $GITHUB_ENV
-
-        # Set outputs using environment files
+        # Save state and set output using environment files
         echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
-        echo "API_STATUS=${API_STATUS}" >> $GITHUB_ENV
+        echo "API_STATUS=${response}" >> $GITHUB_ENV
+        echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
 
-    - name: Use API Status
-      id: use_api_status
-      run: |
-        echo "API Status is: ${{ env.API_STATUS }}"
-        if [ "${{ env.STATE }}" != "200" ]; then
-          echo "API endpoint is not accessible"
-          echo "send_email=true" >> $GITHUB_ENV
-        else
-          echo "send_email=false" >> $GITHUB_ENV
+        # Save state to environment files for use in subsequent steps
+        echo "${DATETIME}" > $GITHUB_ENV/DATETIME
+        echo "${response}" > $GITHUB_ENV/API_STATUS
+        echo "::set-env name=DATETIME::${DATETIME}"
+        echo "::set-env name=API_STATUS::${response}"
 
   insert-mongo-data:
     needs: ci
@@ -72,9 +59,9 @@ jobs:
         MONGODB_URI: ${{ secrets.MONGODB_CONNECTION_STRING }}
         DATABASE_NAME: FTATLogs
         COLLECTION_NAME: "FTAT Logs"
-        NAME: ${{ env.NAME_OF_TOOL }}
-        STATUS: ${{ env.API_STATUS }}
-        DATETIME: ${{ env.DATETIME }}
+        NAME: "${{ env.NAME_OF_TOOL }}"
+        STATUS: "${{ needs.ci.outputs.API_STATUS }}"
+        DATETIME: "${{ needs.ci.outputs.DATETIME }}"
       run: |
         python -c "from pymongo import MongoClient; \
         from datetime import datetime; \
