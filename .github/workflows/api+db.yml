@@ -49,6 +49,13 @@ jobs:
   insert-mongo-data:
     needs: ci
     runs-on: ubuntu-latest
+    env:
+      MONGODB_URI: ${{ secrets.MONGODB_CONNECTION_STRING }}
+      DATABASE_NAME: FTATLogs
+      COLLECTION_NAME: "FTAT Logs"
+      NAME: "${{ env.NAME_OF_TOOL }}"
+      STATUS: "${{ env.API_STATUS }}"
+      DATETIME: "${{ env.DATETIME }}"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -63,13 +70,6 @@ jobs:
           pip install pymongo
 
       - name: Insert data into MongoDB
-        env:
-          MONGODB_URI: ${{ secrets.MONGODB_CONNECTION_STRING }}
-          DATABASE_NAME: FTATLogs
-          COLLECTION_NAME: "FTAT Logs"
-          NAME: "${{ env.NAME_OF_TOOL }}"
-          STATUS: "${{ env.API_STATUS }}"
-          DATETIME: "${{ env.DATETIME }}"
         run: |
           python -c "from pymongo import MongoClient; \
           from datetime import datetime; \
