@@ -31,10 +31,10 @@ jobs:
           fi
           echo "API_STATUS=${API_STATUS}" >> $GITHUB_ENV
           
-          # Save environment variables to a file
-          echo "API_STATUS=${API_STATUS}" > variables.txt
-          echo "DATETIME=${DATETIME}" >> variables.txt
-          echo "STATE=${response}" >> variables.txt
+          # Save environment variables to a file with quotes
+          echo "API_STATUS=\"${API_STATUS}\"" > variables.txt
+          echo "DATETIME=\"${DATETIME}\"" >> variables.txt
+          echo "STATE=\"${response}\"" >> variables.txt
           
       - name: Upload environment variables
         uses: actions/upload-artifact@v4
@@ -80,7 +80,9 @@ jobs:
 
       - name: Set environment variables
         run: |
+          set -a
           source variables.txt
+          set +a
           echo "API_STATUS=${API_STATUS}" >> $GITHUB_ENV
           echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
 
