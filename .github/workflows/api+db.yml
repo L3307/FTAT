@@ -17,67 +17,68 @@ env:
 jobs:
   ci:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Check API Status
-        id: check_api_status
-        run: |
-          response=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.API_ENDPOINT }})
-          echo "STATE=${response}" >> $GITHUB_ENV
+    - name: Check API Status
+      id: check_api_status
+      run: |
+        response=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.API_ENDPOINT }})
+        echo "STATE=${response}" >> $GITHUB_ENV
 
-          # Set the time to SGT
-          DATETIME=$(TZ=${{ env.TIMEZONE }} date +"%Y-%m-%d %H:%M:%S")
-          echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
+        # Set the time to SGT
+        DATETIME=$(TZ=${{ env.TIMEZONE }} date +"%Y-%m-%d %H:%M:%S")
+        echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
 
-          if [ "${response}" = "200" ]; then
-            echo "API_STATUS=active" >> $GITHUB_ENV
-          else
-            echo "API_STATUS=down" >> $GITHUB_ENV
-          fi
+        if [ "${response}" = "200" ]; then
+          echo "API_STATUS=active" >> $GITHUB_ENV
+        else
+          echo "API_STATUS=down" >> $GITHUB_ENV
+        fi
 
-      - name: Use API Status
-        id: use_api_status
-        run: |
-          echo "API Status is: ${{ env.API_STATUS }}"
-          if [ "${{ env.STATE }}" != "200" ]; then
-            echo "API endpoint is not accessible"
-            echo "send_email=true" >> $GITHUB_ENV
-          else
-            echo "send_email=false" >> $GITHUB_ENV
-          fi
+    - name: Use API Status
+      id: use_api_status
+      run: |
+        echo "API Status is: ${{ env.API_STATUS }}"
+        if [ "${{ env.STATE }}" != "200" ]; then
+          echo "API endpoint is not accessible"
+          echo "send_email=true" >> $GITHUB_ENV
+        else
+          echo "send_email=false" >> $GITHUB_ENV
 
   insert-mongo-data:
     needs: ci
     runs-on: ubuntu-latest
-    env:
-      MONGODB_URI: ${{ secrets.MONGODB_CONNECTION_STRING }}
-      DATABASE_NAME: FTATLogs
-      COLLECTION_NAME: "FTAT Logs"
-      NAME: "${{ env.NAME_OF_TOOL }}"
-      STATUS: "${{ env.API_STATUS }}"
-      DATETIME: "${{ env.DATETIME }}"
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
 
-      - name: Install pymongo
-        run: |
-          pip install pymongo
+    - name: Install pymongo
+      run: |
+        pip install pymongo
 
-      - name: Insert data into MongoDB
-        run: |
-          python -c "from pymongo import MongoClient; \
-          from datetime import datetime; \
-          import os; \
-          print('Connecting to MongoDB...'); \
-          client = MongoClient(os.environ['MONGODB_URI']); \
-          db = client[os.environ['DATABASE_NAME']]; \
-          collection = db[os.environ['COLLECTION_NAME']]; \
-          dt = datetime.strptime(os.environ['DATETIME'], '%Y-%m-%d %H:%M:%S'); \
-          document = {'name': os.environ['NAME'], 'status': os.environ['STATUS'], 'datetime': dt}; \
-          collection.insert_one(document); \
-          print('Data inserted successfully.')"
+    - name: Insert data into MongoDB
+      env:
+        MONGODB_URI: ${{ secrets.MONGODB_CONNECTION_STRING }}
+        DATABASE_NAME: FTATLogs
+        COLLECTION_NAME: "FTAT Logs"
+        NAME: ${{ env.NAME_OF_TOOL }}
+        STATUS: ${{ steps.check_api_status.outputs.API_STATUS }}
+        DATETIME: ${{ steps.check_api_status.outputs.DATETIME }}
+      run: |
+        python -c "from pymongo import MongoClient; \
+        from datetime import datetime; \
+        import os; \
+        print('Connecting to MongoDB...'); \
+        client = MongoClient(os.environ['MONGODB_URI']); \
+        db = client[os.environ['DATABASE_NAME']]; \
+        collection = db[os.environ['COLLECTION_NAME']]; \
+        dt = datetime.strptime(os.environ['DATETIME'], '%Y-%m-%d %H:%M:%S'); \
+        document = {'name': os.environ['NAME'], 'status': os.environ['STATUS'], 'datetime': dt}; \
+        collection.insert_one(document); \
+        print('Data inserted successfully.')"
