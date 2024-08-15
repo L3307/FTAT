@@ -12,6 +12,7 @@ env:
   NAME_OF_TOOL: AEGIS
   API_ENDPOINT: https://httpstat.us/404
   EMAIL_RECIPIENTS: conales.jt@pg.com
+  TIMEZONE: "Asia/Singapore"
 
 jobs:
   ci:
@@ -22,12 +23,23 @@ jobs:
         run: |
           response=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.API_ENDPOINT }})
           echo "STATE=${response}" >> $GITHUB_ENV
-          echo "DATETIME=$(date +"%Y-%m-%d %H:%M:%S")" >> $GITHUB_ENV
+          
+          # Set the time to SGT
+          DATETIME=$(TZ=${{ env.TIMEZONE }} date +"%Y-%m-%d %H:%M:%S")
+          echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
 
-      - name: Set Output Variables
+      - name: Use API Status
+        id: api_status_check
         run: |
-          echo "::set-output name=api_status::${{ env.STATE }}"
-          echo "::set-output name=datetime::${{ env.DATETIME }}"
+          if [ "${{ env.STATE }}" = "200" ]; then
+            echo "API endpoint is up and running"
+            echo "send_email=false" >> $GITHUB_ENV
+            echo "API_STATUS=active" >> $GITHUB_ENV
+          else
+            echo "API endpoint is not accessible"
+            echo "send_email=true" >> $GITHUB_ENV
+            echo "API_STATUS=down" >> $GITHUB_ENV
+          fi
 
   insert-mongo-data:
     needs: ci
@@ -51,8 +63,8 @@ jobs:
           DATABASE_NAME: FTATLogs
           COLLECTION_NAME: "FTAT Logs"
           NAME: "${{ env.NAME_OF_TOOL }}"
-          STATUS: "${{ needs.ci.outputs.api_status }}"
-          DATETIME: "${{ needs.ci.outputs.datetime }}"
+          STATUS: "${{ env.API_STATUS }}"
+          DATETIME: "${{ env.DATETIME }}"
         run: |
           python -c "from pymongo import MongoClient; \
           from datetime import datetime; \
@@ -61,7 +73,7 @@ jobs:
           client = MongoClient(os.environ['MONGODB_URI']); \
           db = client[os.environ['DATABASE_NAME']]; \
           collection = db[os.environ['COLLECTION_NAME']]; \
-          dt = datetime.strptime(os.environ['DATETIME'], '%Y-%m-%d %H:%M:%S') if os.environ['DATETIME'] else datetime.now(); \
+          dt = datetime.strptime(os.environ['DATETIME'], '%Y-%m-%d %H:%M:%S'); \
           document = {'name': os.environ['NAME'], 'status': os.environ['STATUS'], 'datetime': dt}; \
           collection.insert_one(document); \
           print('Data inserted successfully.')"
