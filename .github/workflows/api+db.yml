@@ -57,6 +57,18 @@ jobs:
         run: |
           pip install pymongo
 
+      - name: Ensure Environment Variables
+        run: |
+          if [ -z "${{ env.API_STATUS }}" ]; then
+            echo "STATUS=unknown" >> $GITHUB_ENV
+          fi
+          if [ -z "${{ env.DATETIME }}" ]; then
+            DATETIME=$(TZ=${{ env.TIMEZONE }} date +"%Y-%m-%d %H:%M:%S")
+            echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
+          fi
+        env:
+          TIMEZONE: "Asia/Singapore"
+
       - name: Insert data into MongoDB
         env:
           MONGODB_URI: ${{ secrets.MONGODB_CONNECTION_STRING }}
