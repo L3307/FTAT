@@ -9,7 +9,6 @@ env:
   NAME_OF_TOOL: AEGIS
   API_ENDPOINT: https://httpstat.us/404
   EMAIL_RECIPIENTS: conales.jt@pg.com
-  TIMEZONE: "Asia/Singapore"
   DB_NAME: FTATLogs
   CN_NAME: "FTAT Logs"
 
@@ -22,6 +21,8 @@ jobs:
         run: |
           response=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.API_ENDPOINT }})
           echo "STATE=${response}" >> $GITHUB_ENV
+          # Set timezone to SGT and capture date and time
+          TZ=Asia/Singapore
           DATETIME=$(date '+%m/%d/%Y %H:%M:%S')
           echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
           if [ "${response}" = "200" ]; then
@@ -59,7 +60,11 @@ jobs:
         with:
           to: "${{ env.EMAIL_RECIPIENTS }}"
           subject: "[FPS Tools Availability Tracker] | ${{ env.NAME_OF_TOOL }} API Endpoint Status"
-          body: "The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. Please investigate. \n\nHTTP status code: ${{ env.STATE }}\n Time of access: ${{ env.DATETIME }}"
+          body: |
+              The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. Please investigate.
+            
+              HTTP status code: ${{ env.STATE }}
+              Time of access: ${{ env.DATETIME }}
           type: "text/html"
 
   insert-mongo-data:
