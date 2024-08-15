@@ -24,16 +24,20 @@ jobs:
       run: |
         response=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.API_ENDPOINT }})
         echo "STATE=${response}" >> $GITHUB_ENV
-
+    
         # Set the time to SGT
         DATETIME=$(TZ=${{ env.TIMEZONE }} date +"%Y-%m-%d %H:%M:%S")
         echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
-
+    
         if [ "${response}" = "200" ]; then
           echo "API_STATUS=active" >> $GITHUB_ENV
         else
           echo "API_STATUS=down" >> $GITHUB_ENV
         fi
+    
+        # Set outputs
+        echo "::set-output name=DATETIME::${DATETIME}"
+        echo "::set-output name=API_STATUS::${API_STATUS}"
 
     - name: Use API Status
       id: use_api_status
