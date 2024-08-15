@@ -21,7 +21,7 @@ jobs:
         response=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.API_ENDPOINT }})
         echo "STATE=${response}" >> $GITHUB_ENV
         # Capture the current date and time using dedicated command
-        DATETIME=$(date --utc --iso-8601=seconds)
+        DATETIME=$(date '+%m/%d/%Y %H:%M:%S')
         echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
         if [ "${response}" = "200" ]; then
           echo "API_STATUS=active" >> $GITHUB_ENV
@@ -77,8 +77,8 @@ jobs:
         client = MongoClient(os.environ['MONGODB_URI']); \
         db = client[os.environ['DATABASE_NAME']]; \
         collection = db[os.environ['COLLECTION_NAME']]; \
-        # Parse the datetime string retrieved in UTC format
-        dt = datetime.fromisoformat(os.environ['DATETIME']); \
+        # Parse the datetime string in the specific format
+        dt = datetime.strptime(os.environ['DATETIME'], '%m/%d/%Y %H:%M:%S'); \
         document = {'name': os.environ['NAME'], 'status': os.environ['STATUS'], 'datetime': dt}; \
         collection.insert_one(document); \
-        print('Data inserted successfully.')"
+        print('Data inserted successfully.')"      
