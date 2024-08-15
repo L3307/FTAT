@@ -63,77 +63,81 @@ jobs:
           to: "${{ env.EMAIL_RECIPIENTS }}"
           subject: "[FPS Tools Availability Tracker] | ${{ env.NAME_OF_TOOL }} API Endpoint Status"
           body:  |
-              '<!DOCTYPE html>
-                  <html>
-                  <head>
-                      <style>
-                          body {
-                              background-color: #EAF2F8;
-                              margin: 0;
-                              padding: 0;
-                          }
-            
-                          .container {
-                              margin: 20px auto;
-                              max-width: 500px;
-                              padding: 20px;
-                          }
-                          
-                          .btn-container {
-                              background-color: #FFFFFF;
-                              border: 2px solid #004B9B;
-                              border-radius: 25px;
-                              padding: 20px;
-                          }
-                          
-                          .btn {
-                              background-color: #EAF2F8;
-                              border: none;
-                              border-radius: 25px;
-                              padding: 12px 20px;
-                              font-size: 16px;
-                              cursor: pointer;
-                              color: #004B9B;
-                              position: relative;
-                            }
-                            
-                            .ribbon {
-                              width: 120px;
-                              font-size: 20px;
-                              padding: 4px;
-                              position: absolute;
-                              right: -25px;
-                              top: -12px;
-                              text-align: center;
-                              border-radius: 25px;
-                              transform: rotate(20deg);
-                              background-color: #ff9800;
-                              color: white;
-                            }
-            
-                          h1 {
-                              color: #004B9B;
-                          }
-            
-                          p {
-                              color: #000000;
-                          }
-                      </style>
-                  </head>
-                  <body>
-                      <div class="container">
-                          <table class="btn-container">
-                            <tr>
-                              <td>
-                                <button class="btn"><h1>The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. Please investigate.</h1><span class="ribbon">WARNING!</span></button>
-                              </td>
-                            </tr>
-                          </table>
-                          <h2>HTTP status code: ${{ env.STATE }}</h2>
-                          <h2>Time of access: ${{ env.DATETIME }}</h2>
-                      </div>
-                  </body>
-                  </html>'
+                 '<!DOCTYPE html>
+                      <html>
+                      <head>
+                          <style>
+                              body {
+                                  background-color: #EAF2F8;
+                                  margin: 0;
+                                  padding: 0;
+                              }
+                
+                              .container {
+                                  margin: 20px auto;
+                                  max-width: 500px;
+                                  padding: 20px;
+                                  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==");
+                                  background-repeat: no-repeat;
+                                  background-position: center;
+                                  background-size: cover;
+                              }
+                              
+                              .btn-container {
+                                  background-color: #FFFFFF;
+                                  border: 2px solid #004B9B;
+                                  border-radius: 25px;
+                                  padding: 20px;
+                              }
+                              
+                              .btn {
+                                  background-color: #EAF2F8;
+                                  border: none;
+                                  border-radius: 25px;
+                                  padding: 12px 20px;
+                                  font-size: 16px;
+                                  cursor: pointer;
+                                  color: #004B9B;
+                                  position: relative;
+                                }
+                                
+                                .ribbon {
+                                  width: 120px;
+                                  font-size: 20px;
+                                  padding: 4px;
+                                  position: absolute;
+                                  right: -25px;
+                                  top: -12px;
+                                  text-align: center;
+                                  border-radius: 25px;
+                                  transform: rotate(20deg);
+                                  background-color: #ff9800;
+                                  color: white;
+                                }
+                
+                              h1 {
+                                  color: #004B9B;
+                              }
+                
+                              p {
+                                  color: #000000;
+                              }
+                          </style>
+                      </head>
+                      <body>
+                          <div class="container">
+                              <table class="btn-container">
+                                <tr>
+                                  <td>
+                                    <button class="btn"><h1>The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. Please investigate.</h1><span class="ribbon">WARNING!</span></button>
+                                  </td>
+                                </tr>
+                              </table>
+                              <h2>HTTP status code: ${{ env.STATE }}</h2>
+                              <h2>Time of access: ${{ env.DATETIME }}</h2>
+                          </div>
+                      </body>
+                      </html>'
           type: "text/html"
 
   insert-mongo-data:
