@@ -8,6 +8,7 @@ on:
 name: Check API Status and add data to DB
 
 # Declare the variables
+
 env:
   NAME_OF_TOOL: AEGIS
   API_ENDPOINT: https://httpstat.us/404
@@ -23,7 +24,7 @@ jobs:
         run: |
           response=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.API_ENDPOINT }})
           echo "STATE=${response}" >> $GITHUB_ENV
-          
+
           # Set the time to SGT
           DATETIME=$(TZ=${{ env.TIMEZONE }} date +"%Y-%m-%d %H:%M:%S")
           echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
@@ -60,18 +61,6 @@ jobs:
       - name: Install pymongo
         run: |
           pip install pymongo
-
-      - name: Ensure Environment Variables
-        run: |
-          if [ -z "${{ env.API_STATUS }}" ]; then
-            echo "API_STATUS=unknown" >> $GITHUB_ENV
-          fi
-          if [ -z "${{ env.DATETIME }}" ]; then
-            DATETIME=$(TZ=${{ env.TIMEZONE }} date +"%Y-%m-%d %H:%M:%S")
-            echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
-          fi
-        env:
-          TIMEZONE: "Asia/Singapore"
 
       - name: Insert data into MongoDB
         env:
