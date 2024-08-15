@@ -27,15 +27,17 @@ jobs:
         # Set the time to SGT
         DATETIME=$(TZ=${{ env.TIMEZONE }} date +"%Y-%m-%d %H:%M:%S")
         echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
+
         if [ "${response}" = "200" ]; then
           echo "API_STATUS=active" >> $GITHUB_ENV
+          echo "::set-output name=API_STATUS::active"
         else
           echo "API_STATUS=down" >> $GITHUB_ENV
+          echo "::set-output name=API_STATUS::down"
         fi
 
         # Set outputs
         echo "::set-output name=DATETIME::${DATETIME}"
-        echo "::set-output name=API_STATUS::${response}"
 
     - name: Use API Status
       id: use_api_status
@@ -53,7 +55,7 @@ jobs:
       uses: cinotify/github-action@v1.6.0
       with:
         to: "${{ env.EMAIL_RECIPIENTS }}"
-        subject: "[FPS Tools Availability Tacker] | ${{ env.NAME_OF_TOOL }} API Endpoint Status"
+        subject: "[FPS Tools Availability Tracker] | ${{ env.NAME_OF_TOOL }} API Endpoint Status"
         body: "The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. The HTTP status code is ${{ env.STATE }}. Please investigate."
         type: "text/html"
 
@@ -76,10 +78,10 @@ jobs:
 
     - name: Ensure Environment Variables
       run: |
-        if [ -z "${{ env.API_STATUS }}" ]; then
+        if [ -z "${{ needs.ci.outputs.API_STATUS }}" ]; then
           echo "API_STATUS=unknown" >> $GITHUB_ENV
         fi
-        if [ -z "${{ env.DATETIME }}" ]; then
+        if [ -z "${{ needs.ci.outputs.DATETIME }}" ]; then
           DATETIME=$(TZ=${{ env.TIMEZONE }} date +"%Y-%m-%d %H:%M:%S")
           echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
         fi
