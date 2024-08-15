@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check API Status
-        id: api_status
+        id: check_api_status
         run: |
           response=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.API_ENDPOINT }})
           echo "STATE=${response}" >> $GITHUB_ENV
@@ -28,17 +28,21 @@ jobs:
           DATETIME=$(TZ=${{ env.TIMEZONE }} date +"%Y-%m-%d %H:%M:%S")
           echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
 
-      - name: Use API Status
-        id: api_status_check
-        run: |
-          if [ "${{ env.STATE }}" = "200" ]; then
-            echo "API endpoint is up and running"
-            echo "send_email=false" >> $GITHUB_ENV
+          if [ "${response}" = "200" ]; then
             echo "API_STATUS=active" >> $GITHUB_ENV
           else
+            echo "API_STATUS=down" >> $GITHUB_ENV
+          fi
+
+      - name: Use API Status
+        id: use_api_status
+        run: |
+          echo "API Status is: ${{ env.API_STATUS }}"
+          if [ "${{ env.STATE }}" != "200" ]; then
             echo "API endpoint is not accessible"
             echo "send_email=true" >> $GITHUB_ENV
-            echo "API_STATUS=down" >> $GITHUB_ENV
+          else
+            echo "send_email=false" >> $GITHUB_ENV
           fi
 
   insert-mongo-data:
@@ -60,7 +64,7 @@ jobs:
       - name: Ensure Environment Variables
         run: |
           if [ -z "${{ env.API_STATUS }}" ]; then
-            echo "STATUS=unknown" >> $GITHUB_ENV
+            echo "API_STATUS=unknown" >> $GITHUB_ENV
           fi
           if [ -z "${{ env.DATETIME }}" ]; then
             DATETIME=$(TZ=${{ env.TIMEZONE }} date +"%Y-%m-%d %H:%M:%S")
