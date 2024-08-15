@@ -23,12 +23,12 @@ jobs:
         response=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.API_ENDPOINT }})
         echo "STATE=${response}" >> $GITHUB_ENV
         # Capture the current date and time using dedicated command
-        DATETIME=$(date '+%m/%d/%Y %H:%M:%S')
+        run: echo "DATETIME=$(date '+%m/%d/%Y %H:%M:%S')" >> $GITHUB_ENV
         echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
         if [ "${response}" = "200" ]; then
-          echo "API_STATUS=active" >> $GITHUB_ENV
+          run: echo "API_STATUS=active" >> $GITHUB_ENV
         else
-          echo "API_STATUS=down" >> $GITHUB_ENV
+          run: echo "API_STATUS=down" >> $GITHUB_ENV
         fi
         
     - name: Use API Status
