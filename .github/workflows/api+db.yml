@@ -23,6 +23,9 @@ jobs:
           response=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.API_ENDPOINT }})
           echo "STATE=${response}" >> $GITHUB_ENV
           echo "DATETIME=$(date +"%Y-%m-%d %H:%M:%S")" >> $GITHUB_ENV
+      
+      - name: Debug DATETIME
+        run: echo "DATETIME=${{ needs.api_status.outputs.datetime }}"
 
       - name: Use API Status
         id: api_status_check
@@ -40,32 +43,20 @@ jobs:
           echo "::set-output name=api_status::$API_STATUS"
           echo "::set-output name=datetime::$DATETIME"
 
-      - name: Send Email
-        if: env.send_email == 'true'
-        uses: cinotify/github-action@v1.6.0
-        with:
-          to: "${{ env.EMAIL_RECIPIENTS }}"
-          subject: "[FPS Tools Availability Tracker] | ${{ env.NAME_OF_TOOL }} API Endpoint Status"
-          body: "The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. The HTTP status code is ${{ env.STATE }}. Please investigate."
-          type: "text/html"
-
   insert-mongo-data:
     needs: ci
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install pymongo
-
       - name: Insert data into MongoDB
         env:
           MONGODB_URI: ${{ secrets.MONGODB_CONNECTION_STRING }}
@@ -76,12 +67,12 @@ jobs:
           DATETIME: "${{ needs.ci.outputs.datetime }}"
         run: |
           python -c "from pymongo import MongoClient; \
-                     from datetime import datetime; \
-                     import os; \
-                     print('Connecting to MongoDB...'); \
-                     client = MongoClient(os.environ['MONGODB_URI']); \
-                     db = client[os.environ['DATABASE_NAME']]; \
-                     collection = db[os.environ['COLLECTION_NAME']]; \
-                     document = {'name': os.environ['NAME'], 'status': os.environ['STATUS'], 'datetime': datetime.strptime(os.environ['DATETIME'], '%Y-%m-%d %H:%M:%S')}; \
-                     collection.insert_one(document); \
-                     print('Data inserted successfully.')"
+          from datetime import datetime; \
+          import os; \
+          print('Connecting to MongoDB...'); \
+          client = MongoClient(os.environ['MONGODB_URI']); \
+          db = client[os.environ['DATABASE_NAME']]; \
+          collection = db[os.environ['COLLECTION_NAME']]; \
+          document = {'name': os.environ['NAME'], 'status': os.environ['STATUS'], 'datetime': datetime.strptime(os.environ['DATETIME'], '%Y-%m-%d %H:%M:%S')}; \
+          collection.insert_one(document); \
+          print('Data inserted successfully.')"
