@@ -66,11 +66,11 @@ jobs:
     - name: Insert data into MongoDB
       env:
         MONGODB_URI: ${{ secrets.MONGODB_CONNECTION_STRING }}
-        DATABASE_NAME: "${{ env.DB_NAME }}"
-        COLLECTION_NAME: "${{ env.CN_NAME }}"
-        NAME: "${{ env.NAME_OF_TOOL }}"
-        STATUS: echo "$API_STATUS"
-        DATETIME: echo "$DATETIME"
+        DATABASE_NAME: ${{ env.DB_NAME }}
+        COLLECTION_NAME: ${{ env.CN_NAME }}
+        NAME: ${{ env.NAME_OF_TOOL }}
+        STATUS: ${{ env.API_STATUS }}
+        DATETIME: ${{ env.DATETIME }}
       run: |
         python -c "from pymongo import MongoClient; \
         from datetime import datetime; \
