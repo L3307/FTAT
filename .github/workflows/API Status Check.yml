@@ -1,6 +1,7 @@
 on:
-  schedule:
-    - cron: '*/60 * * * *'
+  workflow_dispatch:
+  # schedule:
+  # - cron: '*/60 * * * *'
     
 # Use this file as a template to create new workflows for API endpoint status check
 name: Check API Status Main
@@ -8,7 +9,7 @@ name: Check API Status Main
 # Declare the variables
 env:
  NAME_OF_TOOL: AEGIS
- API_ENDPOINT: https://httpstat.us/404
+ API_ENDPOINT: http://gadc-automat01.na.pg.com:5101/isAlive
  EMAIL_RECIPIENTS: conales.jt@pg.com
 
 jobs:
