@@ -63,32 +63,65 @@ jobs:
           to: "${{ env.EMAIL_RECIPIENTS }}"
           subject: "[FPS Tools Availability Tracker] | ${{ env.NAME_OF_TOOL }} API Endpoint Status"
           body:  |
-                 body: |
-                    <!DOCTYPE html>
+                 <!DOCTYPE html>
                     <html>
                     <head>
                         <style>
-                            .warning-sign {
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                width: 200px;
-                                height: 200px;
-                                background-color: #FFCC00;
-                                border-radius: 50%;
-                                border: 2px solid #FF0000;
-                                color: #FF0000;
-                                font-size: 60px;
-                                font-weight: bold;
+                            body {
+                                background-color: #EAF2F8;
+                                margin: 0;
+                                padding: 0;
+                            }
+              
+                            .container {
+                                border-style: solid;
+                                border-color: #004B9B;
+                                border-radius: 25px;
+                                background-color: #FFFFFF;
+                                margin: 20px auto;
+                                max-width: 500px;
+                                padding: 20px;
+                            }
+                            
+                            .btn {
+                                border: none;
+                                border-radius: 25px;
+                                padding: 12px 20px;
+                                font-size: 16px;
+                                cursor: pointer;
+                                background-color: #EAF2F8;
+                                color: white;
+                                position: relative;
+                              }
+                              
+                              .ribbon {
+                                width: 120px;
+                                font-size: 20px;
+                                padding: 4px;
+                                position: absolute;
+                                right: -25px;
+                                top: -12px;
+                                text-align: center;
+                                border-radius: 25px;
+                                transform: rotate(20deg);
+                                background-color: #ff9800;
+                                color: white;
+                              }
+              
+                            h1 {
+                                color: #004B9B;
+                            }
+              
+                            p {
+                                color: #000000;
                             }
                         </style>
                     </head>
                     <body>
-                        <div class="warning-sign">!</div>
-                        <div>
-                            <h2>The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. Please investigate.</h2>
-                            <h1>HTTP status code: ${{ env.STATE }}</h1>
-                            <h1>Time of access: ${{ env.DATETIME }}</h1>
+                        <div class="container">
+                            <button class="btn"><h1>The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. Please investigate.</h1><span class="ribbon">WARNING!</span></button>
+                            <h2>HTTP status code: ${{ env.STATE }}</h2>
+                            <h2>Time of access: ${{ env.DATETIME }}</h2>
                         </div>
                     </body>
                     </html>
