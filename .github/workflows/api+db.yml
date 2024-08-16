@@ -82,17 +82,22 @@ jobs:
                               border-style: solid;
                               border-color: #003f88;
                           }
+
+                          .container2 {
+                              background-color: #FFFFFF;
+                              padding: 20px;
+                          }
                   
                           span {
                               color: yellow;
                           }
                   
-                          h1 {
+                          h2 {
                               color: #003f88;
                               padding:10px
                           }
                           
-                          h2 {
+                          h4 {
                               color: #33415c;
                               padding:10px
                           }
@@ -124,16 +129,18 @@ jobs:
                       <div class="container">
                         <div class="header">
                           <h3>WARNING!</h3>
-                      </div>
+                        </div>
+                        <div class="container2">
                           <br>
                           <br>
                           <br>
-                          <h1>&nbsp;The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. Please investigate.</h1>
-                          <h2>&nbsp;HTTP status code: ${{ env.STATE }}</h2>
-                          <h2>&nbsp;Time of access: ${{ env.DATETIME }}</h2>
+                          <h2>&nbsp;The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. Please investigate.</h2>
+                          <h4>&nbsp;HTTP status code: ${{ env.STATE }}</h2>
+                          <h4>&nbsp;Time of access: ${{ env.DATETIME }}</h2>
                           <br>
                           <br>
                           <br>
+                        </div>
                       </div>
                   </body>
                   </html>
