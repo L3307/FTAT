@@ -169,14 +169,11 @@ jobs:
           TIME: ${{ env.TIME }}
         run: |
           python -c "from pymongo import MongoClient; \
-          from datetime import datetime; \
           import os; \
           print('Connecting to MongoDB...'); \
           client = MongoClient(os.environ['MONGODB_URI']); \
           db = client[os.environ['DATABASE_NAME']]; \
           collection = db[os.environ['COLLECTION_NAME']]; \
-          # Combine the date and time into a single datetime object
-          dt = datetime.strptime(f'{os.environ['DATE']} {os.environ['TIME']}', '%Y-%m-%d %H:%M:%S'); \
-          document = {'name': os.environ['NAME'], 'status': os.environ['STATUS'], 'date': os.environ['DATE'], 'time': os.environ['TIME'], 'datetime': dt}; \
+          document = {'name': os.environ['NAME'], 'status': os.environ['STATUS'], 'date': os.environ['DATE'], 'time': os.environ['TIME']}; \
           collection.insert_one(document); \
           print('Data inserted successfully.')"
