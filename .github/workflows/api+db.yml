@@ -1,7 +1,7 @@
 on:
-  workflow_dispatch:
-  #schedule:
-  #- cron: '*/60 * * * *'
+  #workflow_dispatch:
+  schedule:
+  - cron: '*/60 * * * *'
 
 env:
   NAME_OF_TOOL: AEGIS
@@ -108,7 +108,7 @@ jobs:
                                   <br>
                                   <h2>&nbsp; The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible.&nbsp;Please investigate.</h2>
                                   <h4>&nbsp; HTTP status code: ${{ env.STATE }}</h2>
-                                  <h4>&nbsp; Date of access: ${{ env.DATE }}</h2>
+                                  <h4>&nbsp; Date: ${{ env.DATE }}</h2>
                                   <h4>&nbsp; Time of access: ${{ env.TIME }}</h2>
                                   <br>
                                   <br>
