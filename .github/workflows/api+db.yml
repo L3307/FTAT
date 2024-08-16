@@ -124,19 +124,23 @@ jobs:
                       </style>
                   </head>
                   <body>
-                      <table class="center" width ="750">
-                        <div class="container">
-                          <div class="header">
-                            <h3>WARNING!</h3>
-                          </div>
-                              <br>
-                              <br>
-                              <h2>&nbsp; The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible.&nbsp;Please investigate.</h2>
-                              <h4>&nbsp; HTTP status code: ${{ env.STATE }}</h2>
-                              <h4>&nbsp; Time of access: ${{ env.DATETIME }}</h2>
-                              <br>
-                              <br>
-                        </div>
+                      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                          <td align="center">
+                            <div class="container">
+                              <div class="header">
+                                <h3>WARNING!</h3>
+                              </div>
+                                  <br>
+                                  <br>
+                                  <h2>&nbsp; The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible.&nbsp;Please investigate.</h2>
+                                  <h4>&nbsp; HTTP status code: ${{ env.STATE }}</h2>
+                                  <h4>&nbsp; Time of access: ${{ env.DATETIME }}</h2>
+                                  <br>
+                                  <br>
+                            </div>
+                          </td>
+                        </tr>
                       </table>
                   </body>
                   </html>
