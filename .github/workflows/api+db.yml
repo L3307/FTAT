@@ -84,9 +84,10 @@ jobs:
                           }
 
                           .container2 {
-                              background-color: #edf2fb;
+                              background-color: #FFFFFF;
                               padding: 20px;
-                              border: 40px solid #FFFFFF;
+                              max-width: 350px;
+                              border: 50px solid #FFFFFF;
                           }
                   
                           h2 {
@@ -122,7 +123,6 @@ jobs:
                       </style>
                   </head>
                   <body>
-                      
                       <div class="container">
                         <div class="header">
                           <h3>WARNING!</h3>
@@ -130,11 +130,9 @@ jobs:
                         <div class="container2">
                           <br>
                           <br>
-                          <br>
                           <h2>&nbsp;The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. Please investigate.</h2>
                           <h4>&nbsp;HTTP status code: ${{ env.STATE }}</h2>
                           <h4>&nbsp;Time of access: ${{ env.DATETIME }}</h2>
-                          <br>
                           <br>
                           <br>
                         </div>
