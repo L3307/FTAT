@@ -84,12 +84,8 @@ jobs:
                           }
 
                           .container2 {
-                              background-color: #FFFFFF;
+                              background-color: #edf2fb;
                               padding: 20px;
-                          }
-                  
-                          span {
-                              color: yellow;
                           }
                   
                           h2 {
