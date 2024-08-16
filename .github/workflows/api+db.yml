@@ -1,11 +1,5 @@
-Certainly! To ensure the date and time format is compatible with Power BI, you can use a combined date-time format that Power BI can easily recognize as a single datetime string. Here’s how you can modify your GitHub Actions workflow to achieve that:
-
-Combine the date and time into a single DATETIME variable in ISO 8601 format.
-Update the workflow to use this combined datetime.
-
-Here’s the updated workflow with the necessary changes:
-
-workflow_dispatch:
+on:
+  workflow_dispatch:
   #schedule:
   #- cron: '*/60 * * * *'
 
