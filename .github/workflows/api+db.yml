@@ -170,10 +170,3 @@ jobs:
           document = {'name': os.environ['NAME'], 'status': os.environ['STATUS'], 'datetime': os.environ['DATETIME']}; \
           collection.insert_one(document); \
           print('Data inserted successfully.')"
-
-Key Changes:
-Combined Date and Time: Introduced a DATETIME variable in the ISO 8601 format (%Y-%m-%dT%H:%M:%S%z).
-Email Body: Updated email body to reflect the combined DATETIME.
-MongoDB Insertion: Updated MongoDB insertion logic to use the combined DATETIME.
-
-This format ensures that Power BI can parse and display the datetime correctly.
