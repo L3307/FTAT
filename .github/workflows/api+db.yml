@@ -74,7 +74,7 @@ jobs:
                               font-family: Helvetica;
                           }
                           
-                          .center {
+                          table.center {
                               margin-left: auto;
                               margin-right: auto;
                             }
@@ -134,9 +134,9 @@ jobs:
                             <div class="container2">
                               <br>
                               <br>
-                              <h2>&nbsp;The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. Please investigate.</h2>
-                              <h4>&nbsp;HTTP status code: ${{ env.STATE }}</h2>
-                              <h4>&nbsp;Time of access: ${{ env.DATETIME }}</h2>
+                              <h2>&nbsp; The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible.&nbsp; Please investigate.</h2>
+                              <h4>&nbsp; HTTP status code: ${{ env.STATE }}</h2>
+                              <h4>&nbsp; Time of access: ${{ env.DATETIME }}</h2>
                               <br>
                               <br>
                             </div>
