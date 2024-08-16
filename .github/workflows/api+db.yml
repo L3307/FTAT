@@ -86,7 +86,7 @@ jobs:
                           .container2 {
                               background-color: #edf2fb;
                               padding: 20px;
-                              border-color: 40px solid #FFFFFF;
+                              border: 40px solid #FFFFFF;
                           }
                   
                           h2 {
