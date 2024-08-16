@@ -63,174 +63,76 @@ jobs:
           to: "${{ env.EMAIL_RECIPIENTS }}"
           subject: "[FPS Tools Availability Tracker] | ${{ env.NAME_OF_TOOL }} API Endpoint Status"
           body:  |
-                 <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <style>
-                            body {
-                                background-color: #edf2fb;
-                                margin: 0;
-                                padding: 0;
-                                font-family: Helvetica;
-                            }
-                    
-                            .container {
-                                background-color: #FFFFFF;
-                                margin: 20px auto;
-                                max-width: 350px;
-                                padding: -10px;
-                                
-                            }
-                    
-                            span {
-                                color: yellow;
-                            }
-                    
-                            h1 {
-                                color: #003f88;
-                            }
-                            
-                            h4 {
-                                color: #33415c;
-                            }
-                    
-                            p {
-                                color: #7d8597;
-                            }
-                            
-                            .header {
-                                background-color: #fdc500;
-                                padding: 10px;
-                                text-align: center;
-                                max-width: 100px;
-                            }
-                            
-                            .footer {
-                                background-color: #fdc500;
-                                padding: 10px;
-                                text-align: center;
-                            }
-                            
-                            .header h3, .footer h3 {
-                                color: #00296b;
-                                margin: 0;
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        
-                        <!-- CONTAINER -->
-                        
-                    <table class="w100" cellspacing="0" cellpadding="0" border="0" align="center" width="600" style="width: 640px; min-width: 640px; margin: 0 auto;">
-                       <tbody>
-                         
-                          <tr>
-                            <td align="center" style="padding-left:7px;padding-right:7px;height:1px;line-height:1px;font-size:1px;">
-                              <div class="w100" style="display:block;height:1px;background-color:#ffffff;line-height:1px;font-size:1px;">&nbsp;</div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td align="center" style="padding-left:5px;padding-right:5px;height:1px;line-height:1px;font-size:1px;">
-                              <div class="w100" style="display:block;height:1px;background-color:#ffffff;line-height:1px;font-size:1px;">&nbsp;</div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td align="center" style="padding-left:4px;padding-right:4px;height:1px;line-height:1px;font-size:1px;">
-                              <div class="w100" style="display:block;height:1px;background-color:#ffffff;line-height:1px;font-size:1px;">&nbsp;</div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td align="center" style="padding-left:3px;padding-right:3px;height:1px;line-height:1px;font-size:1px;">
-                              <div class="w100" style="display:block;height:1px;background-color:#ffffff;line-height:1px;font-size:1px;">&nbsp;</div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td align="center" style="padding-left:2px;padding-right:2px;height:1px;line-height:1px;font-size:1px;">
-                              <div class="w100" style="display:block;height:1px;background-color:#ffffff;line-height:1px;font-size:1px;">&nbsp;</div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td align="center" style="padding-left:1px;padding-right:1px;height:1px;line-height:1px;font-size:1px;">
-                              <div class="w100" style="display:block;height:1px;background-color:#ffffff;line-height:1px;font-size:1px;">&nbsp;</div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td align="center" style="padding-left:1px;padding-right:1px;height:1px;line-height:1px;font-size:1px;">
-                              <div class="w100" style="display:block;height:1px;background-color:#ffffff;line-height:1px;font-size:1px;">&nbsp;</div>
-                            </td>
-                          </tr>
-                          <tr>
-                          	<td align="" style="">
-                          	  
-                          		<!-- CONTENT -->
-                          		<table class="w100" cellspacing="0" cellpadding="0" border="0" align="center" width="100%" bgcolor="#ffffff" style="width: 100%; background-color: #ffffff; margin: 0 auto;">
-                          		   <tbody>
-                          		      <tr>
-                          		      	<td align="" style="">
-                          		      		 <div class="container">
-                                          <div class="header">
-                                            <h3>WARNING!</h3>
-                                        </div>
-                                            <br>
-                                            <br>
-                                            <br>
-                                            <h1>&nbsp;The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. Please investigate.</h1>
-                                            <h4>&nbsp;HTTP status code: ${{ env.STATE }}</h4>
-                                            <h4>&nbsp;Time of access: ${{ env.DATETIME }}</h4>
-                                            <br>
-                                            <br>
-                                            <br>
-                                             <div>
-                                            <p style="font-size:20%;">FPT IT Operations | FPS Tools Availavilty Tracker</p>
-                                        </div>
-                                        </div>
-                          		        </td>
-                          		      </tr>
-                          		   </tbody>
-                          		</table>
-                          		<!-- /CONTENT -->
-                            </td>
-                          </tr>
-                          <tr>
-                            <td align="center" style="padding-left:1px;padding-right:1px;height:1px;line-height:1px;font-size:1px;">
-                              <div class="w100" style="display:block;height:1px;background-color:#ffffff;line-height:1px;font-size:1px;">&nbsp;</div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td align="center" style="padding-left:1px;padding-right:1px;height:1px;line-height:1px;font-size:1px;">
-                              <div class="w100" style="display:block;height:1px;background-color:#ffffff;line-height:1px;font-size:1px;">&nbsp;</div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td align="center" style="padding-left:2px;padding-right:2px;height:1px;line-height:1px;font-size:1px;">
-                              <div class="w100" style="display:block;height:1px;background-color:#ffffff;line-height:1px;font-size:1px;">&nbsp;</div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td align="center" style="padding-left:3px;padding-right:3px;height:1px;line-height:1px;font-size:1px;">
-                              <div class="w100" style="display:block;height:1px;background-color:#ffffff;line-height:1px;font-size:1px;">&nbsp;</div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td align="center" style="padding-left:4px;padding-right:4px;height:1px;line-height:1px;font-size:1px;">
-                              <div class="w100" style="display:block;height:1px;background-color:#ffffff;line-height:1px;font-size:1px;">&nbsp;</div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td align="center" style="padding-left:5px;padding-right:5px;height:1px;line-height:1px;font-size:1px;">
-                              <div class="w100" style="display:block;height:1px;background-color:#ffffff;line-height:1px;font-size:1px;">&nbsp;</div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td align="center" style="padding-left:7px;padding-right:7px;height:1px;line-height:1px;font-size:1px;">
-                              <div class="w100" style="display:block;height:1px;background-color:#ffffff;line-height:1px;font-size:1px;">&nbsp;</div>
-                            </td>
-                          </tr>
-                       </tbody>
-                    </table>
-                    <!-- /CONTAINER -->
-                    </body>
-                    </html>
+                <!DOCTYPE html>
+                  <html>
+                  <head>
+                      <style>
+                          body {
+                              background-color: #edf2fb;
+                              margin: 0;
+                              padding: 0;
+                              font-family: Helvetica;
+                          }
+                  
+                          .container {
+                              background-color: #FFFFFF;
+                              margin: 20px auto;
+                              max-width: 350px;
+                              padding: -10px;
+                              border-style: solid;
+                              border-color: #003f88;
+                          }
+                  
+                          span {
+                              color: yellow;
+                          }
+                  
+                          h1 {
+                              color: #003f88;
+                          }
+                          
+                          h2 {
+                              color: #33415c;
+                          }
+                  
+                          p {
+                              color: #7d8597;
+                          }
+                          
+                          .header {
+                              background-color: #fdc500;
+                              padding: 10px;
+                              text-align: center;
+                          }
+                          
+                          .footer {
+                              background-color: #fdc500;
+                              padding: 10px;
+                              text-align: center;
+                          }
+                          
+                          .header h3, .footer h3 {
+                              color: #00296b;
+                              margin: 0;
+                          }
+                      </style>
+                  </head>
+                  <body>
+                      
+                      <div class="container">
+                        <div class="header">
+                          <h3>WARNING!</h3>
+                      </div>
+                          <h1>&nbsp;The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. Please investigate.</h1>
+                          <h2>&nbsp;HTTP status code: ${{ env.STATE }}</h2>
+                          <h2>&nbsp;Time of access: ${{ env.DATETIME }}</h2>
+                           <div class="footer">
+                          <p style="font-size:20%;">FPT IT Operations | FPS Tools Availavilty Tracker</p>
+                      </div>
+                      </div>
+                     
+                  </body>
+                  </html>
           type: "text/html"
 
   insert-mongo-data:
