@@ -1,7 +1,10 @@
+
+name: Check API and insert to DB
+
 on:
-  workflow_dispatch:
-  #schedule:
-  #- cron: '*/60 * * * *'
+  #workflow_dispatch:
+  schedule:
+  - cron: '*/60 * * * *'
 
 env:
   NAME_OF_TOOL: AEGIS
@@ -20,9 +23,9 @@ jobs:
           response=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.API_ENDPOINT }})
           echo "STATE=${response}" >> $GITHUB_ENV
           
-          # Set timezone to SGT and capture date and time in ISO 8601 format
+          # Set timezone to SGT and capture date and time
           export TZ=Asia/Singapore
-          DATETIME=$(date '+%Y-%m-%dT%H:%M:%S%z')
+          DATETIME=$(date '+%m/%d/%Y %H:%M:%S')
           echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
           
           if [ "${response}" = "200" ]; then
@@ -53,7 +56,6 @@ jobs:
           else
             echo "send_email=false" >> $GITHUB_ENV
           fi
-
       - name: Send Email
         if: env.send_email == 'true'
         uses: cinotify/github-action@v1.6.0
@@ -105,7 +107,7 @@ jobs:
                                   <br>
                                   <h2>&nbsp; The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible.&nbsp;Please investigate.</h2>
                                   <h4>&nbsp; HTTP status code: ${{ env.STATE }}</h2>
-                                  <h4>&nbsp; Date and Time of access: ${{ env.DATETIME }}</h2>
+                                  <h4>&nbsp; Time of access: ${{ env.DATETIME }}</h2>
                                   <br>
                                   <br>
                           </td>
@@ -138,12 +140,10 @@ jobs:
           set +a
           echo "API_STATUS=${API_STATUS}" >> $GITHUB_ENV
           echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
-
       - name: Debug Print environment variables
         run: |
           echo "API_STATUS=${API_STATUS}"
           echo "DATETIME=${DATETIME}"
-
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -162,11 +162,14 @@ jobs:
           DATETIME: ${{ env.DATETIME }}
         run: |
           python -c "from pymongo import MongoClient; \
+          from datetime import datetime; \
           import os; \
           print('Connecting to MongoDB...'); \
           client = MongoClient(os.environ['MONGODB_URI']); \
           db = client[os.environ['DATABASE_NAME']]; \
           collection = db[os.environ['COLLECTION_NAME']]; \
-          document = {'name': os.environ['NAME'], 'status': os.environ['STATUS'], 'datetime': os.environ['DATETIME']}; \
+          # Parse the datetime string in the specific format
+          dt = datetime.strptime(os.environ['DATETIME'], '%m/%d/%Y %H:%M:%S'); \
+          document = {'name': os.environ['NAME'], 'status': os.environ['STATUS'], 'datetime': dt}; \
           collection.insert_one(document); \
           print('Data inserted successfully.')"
