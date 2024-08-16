@@ -73,13 +73,7 @@ jobs:
                               padding: 0;
                               font-family: Helvetica;
                           }
-                           
-                          .container {
-                              background-color: #FFFFFF;
-                              border-style: solid;
-                              border-color: #003f88;
-                          }
-                  
+                          
                           h2 {
                               color: #003f88;
                               padding:10px
@@ -107,7 +101,7 @@ jobs:
                       </style>
                   </head>
                   <body>
-                      <table width="70%" border="0" cellspacing="0" cellpadding="0" border-style: solid  border-color: #003f88;>
+                      <table width="100%" border="0" cellspacing="0" cellpadding="0" background-color: #FFFFFF;>
                         <tr>
                           <td align="center">
                               <div class="header">
