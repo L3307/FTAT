@@ -28,9 +28,9 @@ jobs:
           echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
           
           if [ "${response}" = "200" ]; then
-            API_STATUS="active"
+            API_STATUS="Active"
           else
-            API_STATUS="down"
+            API_STATUS="Down"
           fi
           echo "API_STATUS=${API_STATUS}" >> $GITHUB_ENV
           
