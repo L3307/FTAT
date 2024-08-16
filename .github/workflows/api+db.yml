@@ -1,5 +1,11 @@
-on:
-  workflow_dispatch:
+Certainly! To ensure the date and time format is compatible with Power BI, you can use a combined date-time format that Power BI can easily recognize as a single datetime string. Here’s how you can modify your GitHub Actions workflow to achieve that:
+
+Combine the date and time into a single DATETIME variable in ISO 8601 format.
+Update the workflow to use this combined datetime.
+
+Here’s the updated workflow with the necessary changes:
+
+workflow_dispatch:
   #schedule:
   #- cron: '*/60 * * * *'
 
@@ -20,12 +26,10 @@ jobs:
           response=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.API_ENDPOINT }})
           echo "STATE=${response}" >> $GITHUB_ENV
           
-          # Set timezone to SGT and capture date and time separately
+          # Set timezone to SGT and capture date and time in ISO 8601 format
           export TZ=Asia/Singapore
-          DATE=$(date '+%Y-%m-%d')
-          TIME=$(date '+%H:%M:%S')
-          echo "DATE=${DATE}" >> $GITHUB_ENV
-          echo "TIME=${TIME}" >> $GITHUB_ENV
+          DATETIME=$(date '+%Y-%m-%dT%H:%M:%S%z')
+          echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
           
           if [ "${response}" = "200" ]; then
             API_STATUS="Active"
@@ -36,8 +40,7 @@ jobs:
           
           # Save environment variables to a file with quotes
           echo "API_STATUS=\"${API_STATUS}\"" > variables.txt
-          echo "DATE=\"${DATE}\"" >> variables.txt
-          echo "TIME=\"${TIME}\"" >> variables.txt
+          echo "DATETIME=\"${DATETIME}\"" >> variables.txt
           echo "STATE=\"${response}\"" >> variables.txt
           
       - name: Upload environment variables
@@ -108,8 +111,7 @@ jobs:
                                   <br>
                                   <h2>&nbsp; The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible.&nbsp;Please investigate.</h2>
                                   <h4>&nbsp; HTTP status code: ${{ env.STATE }}</h2>
-                                  <h4>&nbsp; Date: ${{ env.DATE }}</h2>
-                                  <h4>&nbsp; Time of access: ${{ env.TIME }}</h2>
+                                  <h4>&nbsp; Date and Time of access: ${{ env.DATETIME }}</h2>
                                   <br>
                                   <br>
                           </td>
@@ -141,14 +143,12 @@ jobs:
           source variables.txt
           set +a
           echo "API_STATUS=${API_STATUS}" >> $GITHUB_ENV
-          echo "DATE=${DATE}" >> $GITHUB_ENV
-          echo "TIME=${TIME}" >> $GITHUB_ENV
+          echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
 
       - name: Debug Print environment variables
         run: |
           echo "API_STATUS=${API_STATUS}"
-          echo "DATE=${DATE}"
-          echo "TIME=${TIME}"
+          echo "DATETIME=${DATETIME}"
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -165,8 +165,7 @@ jobs:
           COLLECTION_NAME: ${{ env.CN_NAME }}
           NAME: ${{ env.NAME_OF_TOOL }}
           STATUS: ${{ env.API_STATUS }}
-          DATE: ${{ env.DATE }}
-          TIME: ${{ env.TIME }}
+          DATETIME: ${{ env.DATETIME }}
         run: |
           python -c "from pymongo import MongoClient; \
           import os; \
@@ -174,6 +173,13 @@ jobs:
           client = MongoClient(os.environ['MONGODB_URI']); \
           db = client[os.environ['DATABASE_NAME']]; \
           collection = db[os.environ['COLLECTION_NAME']]; \
-          document = {'name': os.environ['NAME'], 'status': os.environ['STATUS'], 'date': os.environ['DATE'], 'time': os.environ['TIME']}; \
+          document = {'name': os.environ['NAME'], 'status': os.environ['STATUS'], 'datetime': os.environ['DATETIME']}; \
           collection.insert_one(document); \
           print('Data inserted successfully.')"
+
+Key Changes:
+Combined Date and Time: Introduced a DATETIME variable in the ISO 8601 format (%Y-%m-%dT%H:%M:%S%z).
+Email Body: Updated email body to reflect the combined DATETIME.
+MongoDB Insertion: Updated MongoDB insertion logic to use the combined DATETIME.
+
+This format ensures that Power BI can parse and display the datetime correctly.
