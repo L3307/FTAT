@@ -85,11 +85,6 @@ jobs:
 
                           .container2 {
                               background-color: #FFFFFF;
-                              padding: 20px;
-                              max-width: auto;
-                              border: 50px;
-                              border-color: #FFFFFF;
-                              border-style: solid;
                           }
                   
                           h2 {
