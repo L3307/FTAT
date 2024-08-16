@@ -107,10 +107,9 @@ jobs:
                       </style>
                   </head>
                   <body>
-                      <table width="70%" border="0" cellspacing="0" cellpadding="0">
+                      <table width="70%" border="0" cellspacing="0" cellpadding="0" border-style: solid  border-color: #003f88;>
                         <tr>
                           <td align="center">
-                            <div class="container">
                               <div class="header">
                                 <h3>WARNING!</h3>
                               </div>
@@ -121,7 +120,6 @@ jobs:
                                   <h4>&nbsp; Time of access: ${{ env.DATETIME }}</h2>
                                   <br>
                                   <br>
-                            </div>
                           </td>
                         </tr>
                       </table>
