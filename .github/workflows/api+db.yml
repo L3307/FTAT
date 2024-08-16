@@ -89,10 +89,12 @@ jobs:
                   
                           h1 {
                               color: #003f88;
+                              padding:10px
                           }
                           
                           h2 {
                               color: #33415c;
+                              padding:10px
                           }
                   
                           p {
@@ -123,14 +125,16 @@ jobs:
                         <div class="header">
                           <h3>WARNING!</h3>
                       </div>
+                          <br>
+                          <br>
+                          <br>
                           <h1>&nbsp;The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible. Please investigate.</h1>
                           <h2>&nbsp;HTTP status code: ${{ env.STATE }}</h2>
                           <h2>&nbsp;Time of access: ${{ env.DATETIME }}</h2>
-                           <div class="footer">
-                          <p style="font-size:20%;">FPT IT Operations | FPS Tools Availavilty Tracker</p>
+                          <br>
+                          <br>
+                          <br>
                       </div>
-                      </div>
-                     
                   </body>
                   </html>
           type: "text/html"
