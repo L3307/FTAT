@@ -1,9 +1,9 @@
 name: Check API and insert to DB
 
 on:
-  workflow_dispatch:
-  #schedule:
-  #- cron: '*/60 * * * *'
+  #workflow_dispatch:
+  schedule:
+  - cron: '*/60 * * * *'
 
 env:
   NAME_OF_TOOL: AEGIS
@@ -83,10 +83,6 @@ jobs:
                               color: #33415c;
                               padding:10px
                           }
-                  
-                          p {
-                              color: #7d8597;
-                          }
                           
                           .header {
                               background-color: #fdc500;
@@ -101,7 +97,7 @@ jobs:
                       </style>
                   </head>
                   <body>
-                      <table width="100%" border="0" cellspacing="0" cellpadding="0" background-color: #FFFFFF;>
+                      <table width="100%" border="0" cellspacing="0" cellpadding="0";>
                         <tr>
                           <td align="center">
                               <div class="header">
