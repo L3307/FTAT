@@ -7,7 +7,7 @@ on:
     - cron: '*/30 * * * *'
 
 env:
-  NAME_OF_TOOL: AEGIS
+  NAME_OF_TOOL: SSP
   API_ENDPOINT: https://httpstat.us/404
   EMAIL_RECIPIENTS: conales.jt@pg.com
   DB_NAME: FTATLogs
