@@ -2,12 +2,12 @@
 name: Check API and insert to DB
 
 on:
-    workflow_dispatch:
-    #schedule:
-    #- cron: '*/30 * * * *'
+    #workflow_dispatch:
+    schedule:
+    - cron: '*/30,0 * * * *'
 
 env:
-  NAME_OF_TOOL: SSP
+  NAME_OF_TOOL: "CFD DASHBOARD"
   API_ENDPOINT: https://httpstat.us/404
   EMAIL_RECIPIENTS: conales.jt@pg.com
   DB_NAME: FTATLogs
