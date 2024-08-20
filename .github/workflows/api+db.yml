@@ -4,11 +4,12 @@ name: Check API and insert to DB
 on:
     #workflow_dispatch:
     schedule:
-    - cron: '*/30,0 * * * *'
+      - cron: '0 * * * *'
+      - cron: '30 * * * *'
 
 env:
   NAME_OF_TOOL: "CFD DASHBOARD"
-  API_ENDPOINT: https://httpstat.us/404
+  API_ENDPOINT: https://httpstat.us/404        
   EMAIL_RECIPIENTS: conales.jt@pg.com
   DB_NAME: FTATLogs
   CN_NAME: "FTAT Logs"
