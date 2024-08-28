@@ -2,10 +2,10 @@
 name: Check API and insert to DB
 
 on:
-    workflow_dispatch:
-    #schedule:
-     # - cron: '0 * * * *'
-     # - cron: '30 * * * *'
+    #workflow_dispatch:
+    schedule:
+      - cron: '0 * * * *'
+      - cron: '30 * * * *'
 
 env:
   NAME_OF_TOOL: AEGIS
