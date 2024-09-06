@@ -1,8 +1,8 @@
+name: Check API Status V3
+
 on:
  repository_dispatch:
     types: [manual-trigger]
-
-name: Check API Status V3
 
 jobs:
   check_api_status:
