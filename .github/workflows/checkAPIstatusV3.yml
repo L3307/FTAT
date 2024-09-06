@@ -1,6 +1,6 @@
 on:
-  schedule:
-    - cron: '*/30 * * * *'
+ repository_dispatch:
+    types: [manual-trigger]
 
 name: Check API Status V3
 
