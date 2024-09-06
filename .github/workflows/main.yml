@@ -1,0 +1,176 @@
+
+name: Check API and insert to DB [SSP]
+
+on:
+    #workflow_dispatch:
+    schedule:
+      - cron: '45 * * * *'
+      #- cron: '30 * * * *'
+
+env:
+  NAME_OF_TOOL: SSP
+  API_ENDPOINT: https://httpstat.us/200
+  EMAIL_RECIPIENTS: conales.jt@pg.com
+  DB_NAME: FTATLogs
+  CN_NAME: "FTAT Logs"
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check API Status
+        id: check_api_status
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.API_ENDPOINT }})
+          echo "STATE=${response}" >> $GITHUB_ENV
+          
+          # Set timezone to SGT and capture date and time
+          export TZ=Asia/Singapore
+          DATETIME=$(date '+%m/%d/%Y %H:%M:%S')
+          echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
+          
+          if [ "${response}" = "200" ]; then
+            API_STATUS="Active"
+          else
+            API_STATUS="Down"
+          fi
+          echo "API_STATUS=${API_STATUS}" >> $GITHUB_ENV
+          
+          # Save environment variables to a file with quotes
+          echo "API_STATUS=\"${API_STATUS}\"" > variables.txt
+          echo "DATETIME=\"${DATETIME}\"" >> variables.txt
+          echo "STATE=\"${response}\"" >> variables.txt
+          
+      - name: Upload environment variables
+        uses: actions/upload-artifact@v4
+        with:
+          name: env-vars
+          path: variables.txt
+
+      - name: Use API Status
+        id: use_api_status
+        run: |
+          echo "API Status is: ${{ env.API_STATUS }}"
+          if [ "${{ env.STATE }}" != "200" ]; then
+            echo "API endpoint is not accessible"
+            echo "send_email=true" >> $GITHUB_ENV
+          else
+            echo "send_email=false" >> $GITHUB_ENV
+          fi
+      - name: Send Email
+        if: env.send_email == 'true'
+        uses: cinotify/github-action@v1.6.0
+        with:
+          to: "${{ env.EMAIL_RECIPIENTS }}"
+          subject: "[FPS Tools Availability Tracker] | ${{ env.NAME_OF_TOOL }} API Endpoint Status"
+          body:  |
+                <!DOCTYPE html>
+                  <html>
+                  <head>
+                      <style>
+                          body {
+                              background-color: #edf2fb;
+                              margin: 0;
+                              padding: 0;
+                              font-family: Helvetica;
+                          }
+                          
+                          h2 {
+                              color: #003f88;
+                              padding:10px
+                          }
+                          
+                          h4 {
+                              color: #33415c;
+                              padding:10px
+                          }
+                          
+                          .header {
+                              background-color: #fdc500;
+                              padding: 10px;
+                              text-align: center;
+                          }
+                          
+                          .header h3 {
+                              color: #00296b;
+                              margin: 0;
+                          }
+                      </style>
+                  </head>
+                  <body>
+                      <table width="100%" border="1" cellspacing="0" cellpadding="0";>
+                        <tr>
+                          <td align="center">
+                              <div class="header">
+                                <h3>WARNING!</h3>
+                              </div>
+                                  <br>
+                                  <br>
+                                  <h2>&nbsp; The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible.&nbsp;Please investigate.</h2>
+                                  <h4>&nbsp; HTTP status code: ${{ env.STATE }}</h2>
+                                  <h4>&nbsp; Time of access: ${{ env.DATETIME }}</h2>
+                                  <br>
+                                  <br>
+                          </td>
+                        </tr>
+                      </table>
+                  </body>
+                  </html>
+          type: "text/html"
+
+  insert-mongo-data:
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Download environment variables
+        uses: actions/download-artifact@v4
+        with:
+          name: env-vars
+          path: .
+
+      - name: Debug Print variables.txt contents
+        run: cat variables.txt
+
+      - name: Set environment variables
+        run: |
+          set -a
+          source variables.txt
+          set +a
+          echo "API_STATUS=${API_STATUS}" >> $GITHUB_ENV
+          echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
+      - name: Debug Print environment variables
+        run: |
+          echo "API_STATUS=${API_STATUS}"
+          echo "DATETIME=${DATETIME}"
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install pymongo
+        run: pip install pymongo
+
+      - name: Insert data into MongoDB
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_CONNECTION_STRING }}
+          DATABASE_NAME: ${{ env.DB_NAME }}
+          COLLECTION_NAME: ${{ env.CN_NAME }}
+          NAME: ${{ env.NAME_OF_TOOL }}
+          STATUS: ${{ env.API_STATUS }}
+          DATETIME: ${{ env.DATETIME }}
+        run: |
+          python -c "from pymongo import MongoClient; \
+          from datetime import datetime; \
+          import os; \
+          print('Connecting to MongoDB...'); \
+          client = MongoClient(os.environ['MONGODB_URI']); \
+          db = client[os.environ['DATABASE_NAME']]; \
+          collection = db[os.environ['COLLECTION_NAME']]; \
+          # Parse the datetime string in the specific format
+          dt = datetime.strptime(os.environ['DATETIME'], '%m/%d/%Y %H:%M:%S'); \
+          document = {'name': os.environ['NAME'], 'status': os.environ['STATUS'], 'datetime': dt}; \
+          collection.insert_one(document); \
+          print('Data inserted successfully.')"
