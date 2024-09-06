@@ -2,9 +2,9 @@
 name: Check API and insert to DB [SSP]
 
 on:
-    workflow_dispatch:
-    #schedule:
-      #- cron: '45 * * * *'
+    #workflow_dispatch:
+    schedule:
+      - cron: '45 * * * *'
       #- cron: '30 * * * *'
 
 env:
