@@ -1,5 +1,5 @@
 
-name: Check API and insert to DB
+name: Check API and insert to DB [AEGIS]
 
 on:
     #workflow_dispatch:
