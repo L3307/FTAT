@@ -1,0 +1,21 @@
+name: Debug API Access
+
+on: [push]
+
+jobs:
+  debug-job:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check connectivity
+      run: |
+        echo "Checking connectivity to API endpoint"
+        ping -c 4 gadc-automat01.na.pg.com
+
+    - name: Test API access
+      run: |
+        echo "Testing API access"
+        curl -v http://gadc-automat01.na.pg.com:8330/isAlive
+
+    - name: Check DNS resolution
+      run: nslookup gadc-automat01.na.pg.com
