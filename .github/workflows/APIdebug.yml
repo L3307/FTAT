@@ -1,6 +1,7 @@
 name: Debug API Access
 
-on: [push]
+on: 
+  workflow_dispatch:
 
 jobs:
   debug-job:
