@@ -1,7 +1,0 @@
-name: API DNS debug
-
-on:
-    workflow_dispatch:
-
-    - name: Check DNS resolution
-      run: nslookup gadc-automat01.na.pg.com

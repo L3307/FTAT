@@ -1,0 +1,12 @@
+name: Debug API DNS
+
+on: 
+  workflow_dispatch:
+
+jobs:
+  debug-job:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check DNS resolution
+      run: nslookup gadc-automat01.na.pg.com
