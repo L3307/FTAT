@@ -17,6 +17,3 @@ jobs:
       run: |
         echo "Testing API access"
         curl -v http://gadc-automat01.na.pg.com:8330/isAlive
-
-    - name: Check DNS resolution
-      run: nslookup gadc-automat01.na.pg.com
