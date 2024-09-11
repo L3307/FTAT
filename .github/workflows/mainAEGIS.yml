@@ -9,7 +9,7 @@ on:
 
 env:
   NAME_OF_TOOL: AEGIS
-  API_ENDPOINT: https://httpstat.us/404        
+  API_ENDPOINT: https://httpstat.us/200        
   EMAIL_RECIPIENTS: conales.jt@pg.com
   DB_NAME: FTATLogs
   CN_NAME: "FTAT Logs"
