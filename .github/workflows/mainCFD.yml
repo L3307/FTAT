@@ -4,7 +4,7 @@ name: Check API and insert to DB [CFD DASHBOARD]
 on:
     #workflow_dispatch:
     schedule:
-      - cron: '45 * * * *'
+      - cron: '56 * * * *'
       #- cron: '30 * * * *'
 
 env:
