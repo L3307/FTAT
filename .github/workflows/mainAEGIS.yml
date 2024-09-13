@@ -117,7 +117,7 @@ jobs:
                       </table>
                   </body>
                   </html>
-          type: "text/html"
+          type: "html"
 
   insert-mongo-data:
     needs: ci
