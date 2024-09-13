@@ -64,7 +64,7 @@ jobs:
           to: "${{ env.EMAIL_RECIPIENTS }}"
           subject: "[FPS Tools Availability Tracker] | ${{ env.NAME_OF_TOOL }} API Endpoint Status"
           body:  |
-                <!DOCTYPE html>
+                 <!DOCTYPE html>
                   <html>
                   <head>
                       <style>
@@ -104,12 +104,17 @@ jobs:
                               <div class="header">
                                 <h3>WARNING!</h3>
                               </div>
+                             	  <br>
                                   <br>
+                                  <img src="https://raw.githubusercontent.com/L3307/L3307/main/images/logoxtrasmall.png" alt="FPS Tools Availability Tracker" />
                                   <br>
                                   <h2>&nbsp; The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible.&nbsp;Please investigate.</h2>
-                                  <h4>&nbsp; HTTP status code: ${{ env.STATE }}</h2>
-                                  <h4>&nbsp; Time of access: ${{ env.DATETIME }}</h2>
+                                  <h4>&nbsp; HTTP status code: ${{ env.STATE }}</h4>
+                                  <h4>&nbsp; Time of access: ${{ env.DATETIME }}</h4>
                                   <br>
+                                  <p><a href="https://app.powerbi.com/groups/dd6241e7-7514-4fee-86c9-7297b0c2ba8e/reports/f41bf871-69f0-43f9-8eca-17715de05768/41963130b5c9f708cd42?experience=power-bi" target="_blank" style="color: #003f88; text-decoration: none; font-weight: bold;">LINK TO FTAT DASHBOARD</a></p>                                  
+                                  <p> This is an auto generated email please do not reply </p>
+                                  <p><a href="mailto:conales.jt@pg.com" class="link">contact support</a></p>
                                   <br>
                           </td>
                         </tr>
