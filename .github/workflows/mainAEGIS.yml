@@ -112,9 +112,7 @@ jobs:
                                   <h4>&nbsp; HTTP status code: ${{ env.STATE }}</h4>
                                   <h4>&nbsp; Time of access: ${{ env.DATETIME }}</h4>
                                   <br>
-                                  <p><a href="https://app.powerbi.com/groups/dd6241e7-7514-4fee-86c9-7297b0c2ba8e/reports/f41bf871-69f0-43f9-8eca-17715de05768/41963130b5c9f708cd42?experience=power-bi" target="_blank" style="color: #003f88; text-decoration: none; font-weight: bold;">LINK TO FTAT DASHBOARD</a></p>
-                                  <br>
-                                  <br>
+                                  <p><a href="https://app.powerbi.com/groups/dd6241e7-7514-4fee-86c9-7297b0c2ba8e/reports/f41bf871-69f0-43f9-8eca-17715de05768/41963130b5c9f708cd42?experience=power-bi" target="_blank" style="color: #003f88; text-decoration: none; font-weight: bold;">LINK TO FTAT DASHBOARD</a></p>                                  
                                   <p> This is an auto generated email please do not reply </p>
                                   <p><a href="mailto:conales.jt@pg.com" class="link">contact support</a></p>
                                   <br>
