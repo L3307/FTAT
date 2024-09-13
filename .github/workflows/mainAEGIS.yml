@@ -104,7 +104,7 @@ jobs:
                               <div class="header">
                                 <h3>WARNING!</h3>
                               </div>
-                                  <img src="https://github.com/L3307/FTAT/blob/main/.github/images/logo.png?raw=true" alt="Image" />
+                                  <img src="https://raw.githubusercontent.com/L3307/FTAT/main/.github/images/logosmall.png?token=GHSAT0AAAAAACVZU3NB3INJQU24O54RFOA4ZXD67ZA" alt="Image" />
                                   <br>
                                   <br>
                                   <h2>&nbsp; The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible.&nbsp;Please investigate.</h2>
@@ -117,7 +117,7 @@ jobs:
                       </table>
                   </body>
                   </html>
-          type: "html"
+          type: "text/html"
 
   insert-mongo-data:
     needs: ci
