@@ -2,14 +2,14 @@
 name: Check API and insert to DB [AEGIS]
 
 on:
-    #workflow_dispatch:
-    schedule:
-      - cron: '56 * * * *'
+    workflow_dispatch:
+    #schedule:
+      #- cron: '56 * * * *'
       #- cron: '30 * * * *'
 
 env:
   NAME_OF_TOOL: AEGIS
-  API_ENDPOINT: https://httpstat.us/200        
+  API_ENDPOINT: https://httpstat.us/404        
   EMAIL_RECIPIENTS: conales.jt@pg.com
   DB_NAME: FTATLogs
   CN_NAME: "FTAT Logs"
@@ -104,6 +104,7 @@ jobs:
                               <div class="header">
                                 <h3>WARNING!</h3>
                               </div>
+                                  <img src="https://github.com/L3307/FTAT/blob/main/.github/images/logo.png?raw=true" alt="Image" />
                                   <br>
                                   <br>
                                   <h2>&nbsp; The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible.&nbsp;Please investigate.</h2>
