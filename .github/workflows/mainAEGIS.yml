@@ -64,7 +64,7 @@ jobs:
           to: "${{ env.EMAIL_RECIPIENTS }}"
           subject: "[FPS Tools Availability Tracker] | ${{ env.NAME_OF_TOOL }} API Endpoint Status"
           body:  |
-                <!DOCTYPE html>
+             <!DOCTYPE html>
                   <html>
                   <head>
                       <style>
@@ -104,14 +104,18 @@ jobs:
                               <div class="header">
                                 <h3>WARNING!</h3>
                               </div>
-                                  <img src="https://raw.githubusercontent.com/L3307/FTAT/main/.github/images/logosmall.png?token=GHSAT0AAAAAACVZU3NB3INJQU24O54RFOA4ZXD67ZA" alt="Image" />
+                             	  <br>
                                   <br>
+                                  <img src="https://raw.githubusercontent.com/L3307/FTAT/main/.github/images/logoxtrasmall.png?token=GHSAT0AAAAAACVZU3NARJUNBVKKF3GU7V4WZXD7QOQ" alt="Image" />
                                   <br>
                                   <h2>&nbsp; The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible.&nbsp;Please investigate.</h2>
-                                  <h4>&nbsp; HTTP status code: ${{ env.STATE }}</h2>
-                                  <h4>&nbsp; Time of access: ${{ env.DATETIME }}</h2>
+                                  <h4>&nbsp; HTTP status code: ${{ env.STATE }}</h4>
+                                  <h4>&nbsp; Time of access: ${{ env.DATETIME }}</h4>
+                                  <p><a href="https://app.powerbi.com/groups/dd6241e7-7514-4fee-86c9-7297b0c2ba8e/reports/f41bf871-69f0-43f9-8eca-17715de05768/41963130b5c9f708cd42?experience=power-bi" target="_blank" style="color: #003f88; text-decoration: none; font-weight: bold;">LINK TO FTAT DASHBOARD</a></p>
                                   <br>
                                   <br>
+                                  <p> This is an auto generated email please do not reply </p>
+                                 <p><a href="GBSG-FPT-IT-Ops-Specialists@groups.pg.com" class="link">contact support</a></p>
                           </td>
                         </tr>
                       </table>
