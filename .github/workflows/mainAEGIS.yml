@@ -106,7 +106,7 @@ jobs:
                               </div>
                              	  <br>
                                   <br>
-                                  <img src="https://raw.githubusercontent.com/L3307/FTAT/main/.github/images/logoxtrasmall.png?token=GHSAT0AAAAAACVZU3NARJUNBVKKF3GU7V4WZXD7QOQ" alt="Image" />
+                                  <img src="https://github.com/L3307/FTAT/blob/main/.github/images/logoxtrasmall.png?raw=true" alt="Image" />
                                   <br>
                                   <h2>&nbsp; The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible.&nbsp;Please investigate.</h2>
                                   <h4>&nbsp; HTTP status code: ${{ env.STATE }}</h4>
@@ -115,7 +115,7 @@ jobs:
                                   <br>
                                   <br>
                                   <p> This is an auto generated email please do not reply </p>
-                                 <p><a href="GBSG-FPT-IT-Ops-Specialists@groups.pg.com" class="link">contact support</a></p>
+                                  <p><a href="GBSG-FPT-IT-Ops-Specialists <GBSG-FPT-IT-Ops-Specialists@groups.pg.com>" class="link">contact support</a></p>
                           </td>
                         </tr>
                       </table>
