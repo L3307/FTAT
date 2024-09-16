@@ -25,4 +25,4 @@ jobs:
     - name: Run MongoDB Script
       env:
         MONGODB_URI: ${{ secrets.MONGODB_URI }} # Using GitHub Secrets for security
-      run: node create_ttl_index.js
+      run: node .github/js/create_ttl_index.js
