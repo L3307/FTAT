@@ -2,9 +2,9 @@
 name: Check API and insert to DB [AEGIS]
 
 on:
-    #workflow_dispatch:
-    schedule:
-      - cron: '56 * * * *'
+    workflow_dispatch:
+    #schedule:
+      #- cron: '56 * * * *'
       #- cron: '30 * * * *'
 
 env:
@@ -175,7 +175,7 @@ jobs:
           db = client[os.environ['DATABASE_NAME']]; \
           collection = db[os.environ['COLLECTION_NAME']]; \
           # Parse the datetime string in the specific format
-          dt = datetime.strptime(os.environ['DATETIME'], '%m/%d/%Y %H:%M:%S'); \
+          dt = datetime.strptime(os.environ['DATETIME'], '%Y-%m-%dT%H:%M:%S%z'); \
           document = {'name': os.environ['NAME'], 'status': os.environ['STATUS'], 'datetime': dt}; \
           collection.insert_one(document); \
           print('Data inserted successfully.')"
