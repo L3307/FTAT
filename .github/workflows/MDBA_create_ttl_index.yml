@@ -1,4 +1,4 @@
-name: Create TTL Index
+name: MDBA Create TTL Index
 
 on:
     workflow_dispatch:
