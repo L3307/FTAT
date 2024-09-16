@@ -7,8 +7,8 @@ async function main() {
 
     try {
         await client.connect();
-        const database = client.db('yourDatabaseName'); // Replace with your database name
-        const collection = database.collection('yourCollectionName'); // Replace with your collection name
+        const database = client.db('FTATLogs'); // Replace with your database name
+        const collection = database.collection('FTAT Logs'); // Replace with your collection name
 
         const result = await collection.createIndex(
             { "datetime": 1 },
