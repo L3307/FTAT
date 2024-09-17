@@ -12,7 +12,8 @@ async function main() {
 
         const result = await collection.createIndex(
             { "datetime": 1 },
-            { expireAfterSeconds: 2592000 } // 30 days
+            //{ expireAfterSeconds: 2592000 } // 30 days
+            { expireAfterSeconds: 2160000 } // 25 days
         );
 
         console.log(`Index created: ${result}`);
