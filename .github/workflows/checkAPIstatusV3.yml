@@ -10,7 +10,7 @@ jobs:
       - name: Check API Status
         id: api_status
         run: |
-         response=$(curl -s -o /dev/null -w "%{http_code}" -u "${{ secrets.MIRA_UN }}:${{ secrets.MIRA_PW }}" ${{ secrets.MIRA_API }}
+         response=$(curl -s -o /dev/null -w "%{http_code}" -u "${{ secrets.MIRA_UN }}:${{ secrets.MIRA_PW }}" ${{ secrets.MIRA_API }})
          echo "STATE=${response}" >> $GITHUB_ENV
 
       - name: Use API Status
