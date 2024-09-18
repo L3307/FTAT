@@ -28,7 +28,7 @@ jobs:
         if: env.send_email == 'true'
         uses: cinotify/github-action@v1.6.0
         with:
-          to: "conales.jt@pg.com, "
+          to: "conales.jt@pg.com"
           subject: "API Endpoint Status"
           body: "The API endpoint is not accessible. The API status is ${{ env.STATE }}. Please investigate."
           type: "text/html"
