@@ -1,5 +1,5 @@
 
-name: Check API and insert to DB [SSP]
+name: Check API and insert to DB [SSP SNOW]
 
 on:
     #workflow_dispatch:
@@ -8,7 +8,7 @@ on:
       #- cron: '30 * * * *'
 
 env:
-  NAME_OF_TOOL: SSP
+  NAME_OF_TOOL: SSP SNOW
   API_ENDPOINT: https://httpstat.us/200
   EMAIL_RECIPIENTS: conales.jt@pg.com
   DB_NAME: FTATLogs
