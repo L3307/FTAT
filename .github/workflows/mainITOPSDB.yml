@@ -8,7 +8,7 @@ on:
       #- cron: '30 * * * *'
 
 env:
-  NAME_OF_TOOL: "IT OPS DASHBOARD"
+  NAME_OF_TOOL: "IT OPS DB"
   API_ENDPOINT: https://httpstat.us/200       
   EMAIL_RECIPIENTS: conales.jt@pg.com
   DB_NAME: FTATLogs
