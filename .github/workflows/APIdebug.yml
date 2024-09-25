@@ -11,9 +11,9 @@ jobs:
     - name: Check connectivity
       run: |
         echo "Checking connectivity to API endpoint"
-        ping -c 4 azw-dxcapautd02.int.pg.com
+        ping -c 4 gadc-automat01.na.pg.com
 
     - name: Test API access
       run: |
         echo "Testing API access"
-        curl -v http://azw-dxcapautd02.int.pg.com:5101/isAlive
+        curl -v http://gadc-automat01.na.pg.com:8330/isAlive 
