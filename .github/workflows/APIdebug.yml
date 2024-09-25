@@ -16,4 +16,4 @@ jobs:
     - name: Test API access
       run: |
         echo "Testing API access"
-        curl -v http://gadc-automat01.na.pg.com:8330/isAlive 
+        curl -v http://gadc-automat01.na.pg.com:8330/isAlive
