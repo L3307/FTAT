@@ -1,4 +1,4 @@
-name: Check API and insert to DB [IT OPS DASHBOARD]
+name: Err 28 test [IT OPS DASHBOARD]
 
 on:
     workflow_dispatch:
