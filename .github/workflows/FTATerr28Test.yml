@@ -66,6 +66,7 @@ jobs:
             echo "send_email=true" >> $GITHUB_ENV
           else
             echo "send_email=false" >> $GITHUB_ENV
+          fi 
           
       - name: Send Email
         if: env.send_email == 'true'
