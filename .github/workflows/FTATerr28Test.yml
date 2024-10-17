@@ -1,10 +1,5 @@
-name: Err 28 test [IT OPS DASHBOARD]
-
 on:
-    workflow_dispatch:
-    #schedule:
-      #- cron: '56 * * * *'
-      #- cron: '30 * * * *'
+  workflow_dispatch:
 
 env:
   NAME_OF_TOOL: "IT OPS DASHBOARD"
@@ -70,7 +65,7 @@ jobs:
             echo "send_email=true" >> $GITHUB_ENV
           else
             echo "send_email=false" >> $GITHUB_ENV
-          fi
+
       - name: Send Email
         if: env.send_email == 'true'
         uses: cinotify/github-action@v1.6.0
@@ -123,7 +118,7 @@ jobs:
                                   <img src="https://raw.githubusercontent.com/L3307/L3307/main/images/logoxtrasmall.png" alt="FPS Tools Availability Tracker" />
                                   <br>
                                   <h2>&nbsp; The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible.&nbsp;Please investigate.</h2>
-                                  <h4>&nbsp; HTTP status code: ${{ env.STATE }} ${{ env.errConn }}</h4>
+                                  <h4>&nbsp; HTTP status code: ${{ env.STATE }} ${{ env.errConn }} </h4>
                                   <h4>&nbsp; Time of access: ${{ env.DATETIME }}</h4>
                                   <br>
                                   <p><a href="https://app.powerbi.com/groups/dd6241e7-7514-4fee-86c9-7297b0c2ba8e/reports/f41bf871-69f0-43f9-8eca-17715de05768/41963130b5c9f708cd42?experience=power-bi" target="_blank" style="color: #003f88; text-decoration: none; font-weight: bold;">LINK TO FTAT DASHBOARD</a></p>                                  
@@ -160,10 +155,12 @@ jobs:
           set +a
           echo "API_STATUS=${API_STATUS}" >> $GITHUB_ENV
           echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
+
       - name: Debug Print environment variables
         run: |
           echo "API_STATUS=${API_STATUS}"
           echo "DATETIME=${DATETIME}"
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -188,7 +185,6 @@ jobs:
           client = MongoClient(os.environ['MONGODB_URI']); \
           db = client[os.environ['DATABASE_NAME']]; \
           collection = db[os.environ['COLLECTION_NAME']]; \
-          # Parse the datetime string in the specific format
           dt = datetime.strptime(os.environ['DATETIME'], '%m/%d/%Y %H:%M:%S'); \
           document = {'name': os.environ['NAME'], 'status': os.environ['STATUS'], 'datetime': dt}; \
           collection.insert_one(document); \
