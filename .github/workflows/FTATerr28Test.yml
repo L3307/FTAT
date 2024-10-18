@@ -28,7 +28,7 @@ jobs:
             errConn=""
         
             # Check for curl errors
-            if [ "$response" = "curl_error" ]; then
+            if [ "$response" = "000curl_error" ]; then
               errConn="COULD NOT RESOLVE HOST"
               API_STATUS="Down"
             elif [ $curl_exit_code -eq 28 ]; then
