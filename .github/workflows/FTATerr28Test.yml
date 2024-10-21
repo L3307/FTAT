@@ -23,7 +23,9 @@ jobs:
             export TZ=Asia/Singapore
             DATETIME=$(date '+%m/%d/%Y %H:%M:%S')
             echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
-        
+
+            STATE=""
+            
             # Check for curl errors
             if [ "$response" = "000curl_error" ]; then
               API_STATUS="Down"
