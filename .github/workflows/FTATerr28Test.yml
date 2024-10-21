@@ -35,6 +35,7 @@ jobs:
               echo "STATE=\"CONNECTION TIMED OUT\"" >> variables.txt
             elif [ "${response}" = "200" ]; then
               API_STATUS="Active"
+              echo "STATE=${response}" >> $GITHUB_ENV
               echo "STATE=\"${response}\"" >> variables.txt
             else
               API_STATUS="Down"
