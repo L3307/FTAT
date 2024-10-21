@@ -24,20 +24,19 @@ jobs:
             DATETIME=$(date '+%m/%d/%Y %H:%M:%S')
             echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
         
-            # Initialize errConn
-            errConn=""
-        
             # Check for curl errors
             if [ "$response" = "000curl_error" ]; then
-              errConn="COULD NOT RESOLVE HOST"
               API_STATUS="Down"
+              echo "STATE=\"COULD NOT RESOLVE HOST\"" >> variables.txt
             elif [ $curl_exit_code -eq 28 ]; then
-              errConn="CONNECTION TIMED OUT"
               API_STATUS="Down"
+              echo "STATE=\"CONNECTION TIMED OUT"" >> variables.txt
             elif [ "${response}" = "200" ]; then
               API_STATUS="Active"
+              echo "STATE=\"${response}\"" >> variables.txt
             else
               API_STATUS="Down"
+              echo "STATE=\"${response}\"" >> variables.txt
             fi
         
             # Output variables to GitHub environment
@@ -48,7 +47,6 @@ jobs:
             # Save environment variables to a file with quotes
             echo "API_STATUS=\"${API_STATUS}\"" > variables.txt
             echo "DATETIME=\"${DATETIME}\"" >> variables.txt
-            echo "STATE=\"${response}\"" >> variables.txt
             echo "errConn=\"${errConn}\"" >> variables.txt
           
       - name: Upload environment variables
@@ -120,7 +118,7 @@ jobs:
                                   <img src="https://raw.githubusercontent.com/L3307/L3307/main/images/logoxtrasmall.png" alt="FPS Tools Availability Tracker" />
                                   <br>
                                   <h2>&nbsp; The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible.&nbsp;Please investigate.</h2>
-                                  <h4>&nbsp; HTTP status code: ${{ env.STATE }} ${{ env.errConn }} </h4>
+                                  <h4>&nbsp; HTTP status code: ${{ env.STATE }}
                                   <h4>&nbsp; Time of access: ${{ env.DATETIME }}</h4>
                                   <br>
                                   <p><a href="https://app.powerbi.com/groups/dd6241e7-7514-4fee-86c9-7297b0c2ba8e/reports/f41bf871-69f0-43f9-8eca-17715de05768/41963130b5c9f708cd42?experience=power-bi" target="_blank" style="color: #003f88; text-decoration: none; font-weight: bold;">LINK TO FTAT DASHBOARD</a></p>                                  
