@@ -47,7 +47,6 @@ jobs:
             # Save environment variables to a file with quotes
             echo "API_STATUS=\"${API_STATUS}\"" >> variables.txt
             echo "DATETIME=\"${DATETIME}\"" >> variables.txt
-            echo "errConn=\"${errConn}\"" >> variables.txt
           
       - name: Upload environment variables
         uses: actions/upload-artifact@v4
