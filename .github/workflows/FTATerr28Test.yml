@@ -3,7 +3,7 @@ on:
 
 env:
   NAME_OF_TOOL: "IT OPS DASHBOARD"
-  API_ENDPOINT: http://gadc-automat03.na.pg.com:8008/ssp/isAlive
+  API_ENDPOINT: https://httpstat.us/404
   EMAIL_RECIPIENTS: conales.jt@pg.com
   DB_NAME: FTATLogs
   CN_NAME: "FTAT Logs"
