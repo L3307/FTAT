@@ -45,7 +45,7 @@ jobs:
             echo "STATE=${response}" >> $GITHUB_ENV
         
             # Save environment variables to a file with quotes
-            echo "API_STATUS=\"${API_STATUS}\"" > variables.txt
+            echo "API_STATUS=\"${API_STATUS}\"" >> variables.txt
             echo "DATETIME=\"${DATETIME}\"" >> variables.txt
             echo "errConn=\"${errConn}\"" >> variables.txt
           
