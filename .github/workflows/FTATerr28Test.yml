@@ -23,8 +23,6 @@ jobs:
             export TZ=Asia/Singapore
             DATETIME=$(date '+%m/%d/%Y %H:%M:%S')
             echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
-
-            STATE=""
             
             # Check for curl errors
             if [ "$response" = "000curl_error" ]; then
@@ -32,7 +30,7 @@ jobs:
               echo "STATE=\"COULD NOT RESOLVE HOST\"" >> variables.txt
             elif [ $curl_exit_code -eq 28 ]; then
               API_STATUS="Down"
-              echo "STATE=\"CONNECTION TIMED OUT"" >> variables.txt
+              echo "STATE=\"CONNECTION TIMED OUT\"" >> variables.txt
             elif [ "${response}" = "200" ]; then
               API_STATUS="Active"
               echo "STATE=\"${response}\"" >> variables.txt
