@@ -27,21 +27,23 @@ jobs:
             # Check for curl errors
             if [ "$response" = "000curl_error" ]; then
               API_STATUS="Down"
+              echo "STATE=COULD NOT RESOLVE HOST" >> $GITHUB_ENV
               echo "STATE=\"COULD NOT RESOLVE HOST\"" >> variables.txt
             elif [ $curl_exit_code -eq 28 ]; then
               API_STATUS="Down"
+              echo "STATE=CONNECTION TIMED OUT" >> $GITHUB_ENV
               echo "STATE=\"CONNECTION TIMED OUT\"" >> variables.txt
             elif [ "${response}" = "200" ]; then
               API_STATUS="Active"
               echo "STATE=\"${response}\"" >> variables.txt
             else
               API_STATUS="Down"
+              echo "STATE=${response}" >> $GITHUB_ENV
               echo "STATE=\"${response}\"" >> variables.txt
             fi
         
             # Output variables to GitHub environment
             echo "API_STATUS=${API_STATUS}" >> $GITHUB_ENV
-            echo "STATE=${response}" >> $GITHUB_ENV
         
             # Save environment variables to a file with quotes
             echo "API_STATUS=\"${API_STATUS}\"" > variables.txt
