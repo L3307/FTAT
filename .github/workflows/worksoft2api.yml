@@ -4,7 +4,9 @@ on:
 env:
   NAME_OF_TOOL: "WORKSOFT"
   API_ENDPOINT1: https://httpstat.us/500
+  API_NAME1: Origins Execution
   API_ENDPOINT2: https://httpstat.us/200
+  API_NAME2: Sugar Odyssey
   EMAIL_RECIPIENTS: conales.jt@pg.com
   DB_NAME: FTATLogs
   CN_NAME: "FTAT Logs"
@@ -30,28 +32,50 @@ jobs:
 
             echo ${response1}
             echo ${response2}
+
+            WS_API=""
             
             # Check for curl errors
-            if [ "${response1}" = "curl_error" ] || [ "${response2}" = "curl_error" ]; then
+             if [ "${response1}" = "curl_error" ] || [ "${response2}" = "curl_error" ]; then
               API_STATUS="Down"
-              echo "STATE=COULD NOT RESOLVE HOST" >> $GITHUB_ENV
-              echo "STATE=\"COULD NOT RESOLVE HOST\"" >> variables.txt
+                if [ "${response1}" = "curl_error" ]; then
+                  echo "STATE= COULD NOT RESOLVE HOST (${{ env.API_NAME1 }})" >> $GITHUB_ENV
+                  echo "STATE=\"COULD NOT RESOLVE HOST (${{ env.API_NAME1 }})\"" >> variables.txt
+                fi
+                if [ "${response2}" = "curl_error" ]; then
+                  echo "STATE= COULD NOT RESOLVE HOST (${{ env.API_NAME2 }})" >> $GITHUB_ENV
+                  echo "STATE=\"COULD NOT RESOLVE HOST (${{ env.API_NAME2 }})\"" >> variables.txt
+                fi
             elif [ $curl_exit_code1 -eq 28 ] || [ $curl_exit_code2 -eq 28 ]; then
-              API_STATUS="Down"
-              echo "STATE=CONNECTION TIMED OUT" >> $GITHUB_ENV
-              echo "STATE=\"CONNECTION TIMED OUT\"" >> variables.txt
+             API_STATUS="Down"
+               if [ $curl_exit_code1 -eq 28 ]; then
+                echo "STATE=CONNECTION TIMED OUT (${{ env.API_NAME1 }})" >> $GITHUB_ENV
+                echo "STATE=\"CONNECTION TIMED OUT (${{ env.API_NAME1 }})\"" >> variables.txt
+              fi
+              if [ $curl_exit_code2 -eq 28 ]; then
+                echo "STATE=CONNECTION TIMED OUT (${{ env.API_NAME2 }})" >> $GITHUB_ENV
+                echo "STATE=\"CONNECTION TIMED OUT (${{ env.API_NAME2 }})\"" >> variables.txt
+              fi
+            elif [ "${response1}" = "404" ] || [ "${response2}" = "404" ]; then
+             API_STATUS="Down"
+              if [ "${response1}" = "404" ]; then
+                echo "STATE=404" >> $GITHUB_ENV
+                echo "STATE=\"404\"" >> variables.txt
+                 WS_API=${{ env.API_NAME1 }}
+              fi
+              if [ "${response2}" = "404" ]; then
+                echo "STATE=404" >> $GITHUB_ENV
+                echo "STATE=\"404\"" >> variables.txt
+                WS_API=${{ env.API_NAME1 }}
+              fi
             elif [ "${response1}" = "200" ] && [ "${response2}" = "200" ]; then
               API_STATUS="Active"
-              echo "STATE=${response1}" >> $GITHUB_ENV
-              echo "STATE=\"${response1}\"" >> variables.txt
-            elif [ "${response1}" = "404" ] || [ "${response2}" = "404" ]; then
-              API_STATUS="Down"
-              echo "STATE=${response1}" >> $GITHUB_ENV
-              echo "STATE=\"${response1}\"" >> variables.txt
+              echo "STATE=200" >> $GITHUB_ENV
+              echo "STATE=\"200\"" >> variables.txt
             else
               API_STATUS="Down"
-              echo "STATE=OTHER ERROR" >> $GITHUB_ENV
-              echo "STATE=\"OTHER ERROR\"" >> variables.txt
+              echo "STATE= PLEASE CHECK ORIGINS AND SUGAR ODYSSEY API" >> $GITHUB_ENV
+              echo "STATE=\"PLEASE CHECK ORIGINS AND SUGAR ODYSSEY API\"" >> variables.txt
             fi
         
             # Output variables to GitHub environment
@@ -130,7 +154,7 @@ jobs:
                                   <img src="https://raw.githubusercontent.com/L3307/L3307/main/images/logoxtrasmall.png" alt="FPS Tools Availability Tracker" />
                                   <br>
                                   <h2>&nbsp; The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible.&nbsp;Please investigate.</h2>
-                                  <h4>&nbsp; HTTP status code: ${{ env.STATE }}
+                                  <h4>&nbsp; HTTP status code: ${{ env.STATE }} (${{env.WS_API]])
                                   <h4>&nbsp; Time of access: ${{ env.DATETIME }}</h4>
                                   <br>
                                   <p><a href="https://app.powerbi.com/groups/dd6241e7-7514-4fee-86c9-7297b0c2ba8e/reports/f41bf871-69f0-43f9-8eca-17715de05768/41963130b5c9f708cd42?experience=power-bi" target="_blank" style="color: #003f88; text-decoration: none; font-weight: bold;">LINK TO FTAT DASHBOARD</a></p>                                  
