@@ -1,0 +1,202 @@
+on:
+  workflow_dispatch:
+
+env:
+  NAME_OF_TOOL: "WORKSOFT"
+  API_ENDPOINT1: https://httpstat.us/404
+  API_ENDPOINT2: https://httpstat.us/200
+  EMAIL_RECIPIENTS: conales.jt@pg.com
+  DB_NAME: FTATLogs
+  CN_NAME: "FTAT Logs"
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check API Status
+        id: check_api_status
+        run: |
+            # Try to execute the curl command and handle errors
+            response1=$(curl -s -o /dev/null -w "%{http_code}" -m 10 ${{ env.API_ENDPOINT1 }} || echo "curl_error")
+            curl_exit_code1=$?
+
+            response2=$(curl -s -o /dev/null -w "%{http_code}" -m 10 ${{ env.API_ENDPOINT2 }} || echo "curl_error")
+            curl_exit_code2=$?
+        
+            # Set timezone to SGT and capture date and time
+            export TZ=Asia/Singapore
+            DATETIME=$(date '+%m/%d/%Y %H:%M:%S')
+            echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
+
+            echo ${response1}
+            echo ${response2}
+            
+            # Check for curl errors
+            if [ "${response1}" = "curl_error" ] || [ "${response2}" = "curl_error" ]; then
+              API_STATUS="Down"
+              echo "STATE=COULD NOT RESOLVE HOST" >> $GITHUB_ENV
+              echo "STATE=\"COULD NOT RESOLVE HOST\"" >> variables.txt
+            elif [ $curl_exit_code1 -eq 28 ] || [ $curl_exit_code2 -eq 28 ]; then
+              API_STATUS="Down"
+              echo "STATE=CONNECTION TIMED OUT" >> $GITHUB_ENV
+              echo "STATE=\"CONNECTION TIMED OUT\"" >> variables.txt
+            elif [ "${response1}" = "200" ] && [ "${response2}" = "200" ]; then
+              API_STATUS="Active"
+              echo "STATE=${response1}" >> $GITHUB_ENV
+              echo "STATE=\"${response1}\"" >> variables.txt
+            elif [ "${response1}" = "404" ] || [ "${response2}" = "404" ]; then
+              API_STATUS="Down"
+              echo "STATE=${response1}" >> $GITHUB_ENV
+              echo "STATE=\"${response1}\"" >> variables.txt
+            else
+              API_STATUS="Down"
+              echo "STATE=OTHER ERROR" >> $GITHUB_ENV
+              echo "STATE=\"OTHER ERROR\"" >> variables.txt
+            fi
+        
+            # Output variables to GitHub environment
+            echo "API_STATUS=${API_STATUS}" >> $GITHUB_ENV
+        
+            # Save environment variables to a file with quotes
+            echo "API_STATUS=\"${API_STATUS}\"" > variables.txt
+            echo "DATETIME=\"${DATETIME}\"" >> variables.txt
+          
+      - name: Upload environment variables
+        uses: actions/upload-artifact@v4
+        with:
+          name: env-vars
+          path: variables.txt
+
+      - name: Use API Status
+        id: use_api_status
+        run: |
+          echo "API Status is: ${{ env.API_STATUS }}"
+          if [ "${{ env.STATE }}" != "200" ]; then
+            echo "API endpoint is not accessible"
+            echo "send_email=true" >> $GITHUB_ENV
+          else
+            echo "send_email=false" >> $GITHUB_ENV
+          fi 
+          
+      - name: Send Email
+        if: env.send_email == 'true'
+        uses: cinotify/github-action@v1.6.0
+        with:
+          to: "${{ env.EMAIL_RECIPIENTS }}"
+          subject: "[ -TEST-FPS Tools Availability Tracker] | ${{ env.NAME_OF_TOOL }} API Endpoint Status"
+          body:  |
+                <!DOCTYPE html>
+                  <html>
+                  <head>
+                      <style>
+                          body {
+                              background-color: #edf2fb;
+                              margin: 0;
+                              padding: 0;
+                              font-family: Helvetica;
+                          }
+                          
+                          h2 {
+                              color: #003f88;
+                              padding:10px
+                          }
+                          
+                          h4 {
+                              color: #33415c;
+                              padding:10px
+                          }
+                          
+                          .header {
+                              background-color: #fdc500;
+                              padding: 10px;
+                              text-align: center;
+                          }
+                          
+                          .header h3 {
+                              color: #00296b;
+                              margin: 0;
+                          }
+                      </style>
+                  </head>
+                  <body>
+                      <table width="100%" border="1" cellspacing="0" cellpadding="0">
+                        <tr>
+                          <td align="center">
+                              <div class="header">
+                                <h3>WARNING!</h3>
+                              </div>
+                             	  <br>
+                                  <br>
+                                  <img src="https://raw.githubusercontent.com/L3307/L3307/main/images/logoxtrasmall.png" alt="FPS Tools Availability Tracker" />
+                                  <br>
+                                  <h2>&nbsp; The ${{ env.NAME_OF_TOOL }} API endpoint is not accessible.&nbsp;Please investigate.</h2>
+                                  <h4>&nbsp; HTTP status code: ${{ env.STATE }}
+                                  <h4>&nbsp; Time of access: ${{ env.DATETIME }}</h4>
+                                  <br>
+                                  <p><a href="https://app.powerbi.com/groups/dd6241e7-7514-4fee-86c9-7297b0c2ba8e/reports/f41bf871-69f0-43f9-8eca-17715de05768/41963130b5c9f708cd42?experience=power-bi" target="_blank" style="color: #003f88; text-decoration: none; font-weight: bold;">LINK TO FTAT DASHBOARD</a></p>                                  
+                                  <p> This is an auto generated email please do not reply </p>
+                                  <br>
+                          </td>
+                        </tr>
+                      </table>
+                  </body>
+                  </html>
+          type: "text/html"
+
+  insert-mongo-data:
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Download environment variables
+        uses: actions/download-artifact@v4
+        with:
+          name: env-vars
+          path: .
+
+      - name: Debug Print variables.txt contents
+        run: cat variables.txt
+
+      - name: Set environment variables
+        run: |
+          set -a
+          source variables.txt
+          set +a
+          echo "API_STATUS=${API_STATUS}" >> $GITHUB_ENV
+          echo "DATETIME=${DATETIME}" >> $GITHUB_ENV
+
+      - name: Debug Print environment variables
+        run: |
+          echo "API_STATUS=${API_STATUS}"
+          echo "DATETIME=${DATETIME}"
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install pymongo
+        run: pip install pymongo
+
+      - name: Insert data into MongoDB
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_CONNECTION_STRING }}
+          DATABASE_NAME: ${{ env.DB_NAME }}
+          COLLECTION_NAME: ${{ env.CN_NAME }}
+          NAME: ${{ env.NAME_OF_TOOL }}
+          STATUS: ${{ env.API_STATUS }}
+          DATETIME: ${{ env.DATETIME }}
+        run: |
+          python -c "from pymongo import MongoClient; \
+          from datetime import datetime; \
+          import os; \
+          print('Connecting to MongoDB...'); \
+          client = MongoClient(os.environ['MONGODB_URI']); \
+          db = client[os.environ['DATABASE_NAME']]; \
+          collection = db[os.environ['COLLECTION_NAME']]; \
+          dt = datetime.strptime(os.environ['DATETIME'], '%m/%d/%Y %H:%M:%S'); \
+          document = {'name': os.environ['NAME'], 'status': os.environ['STATUS'], 'datetime': dt}; \
+          collection.insert_one(document); \
+          print('Data inserted successfully.')"
