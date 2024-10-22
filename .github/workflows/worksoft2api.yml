@@ -39,22 +39,22 @@ jobs:
              if [ "${response1}" = "000curl_error" ] || [ "${response2}" = "000curl_error" ]; then
               API_STATUS="Down"
                 if [ "${response1}" = "000curl_error" ]; then
-                  echo "STATE= COULD NOT RESOLVE HOST (${{ env.API_NAME1 }})" >> $GITHUB_ENV
-                  echo "STATE=\"COULD NOT RESOLVE HOST (${{ env.API_NAME1 }})\"" >> variables.txt
+                  echo "STATE= COULD NOT RESOLVE HOST ${{ env.API_NAME1 }}" >> $GITHUB_ENV
+                  echo "STATE=\"COULD NOT RESOLVE HOST ${{ env.API_NAME1 }}\"" >> variables.txt
                 fi
                 if [ "${response2}" = "000curl_error" ]; then
-                  echo "STATE= COULD NOT RESOLVE HOST (${{ env.API_NAME2 }})" >> $GITHUB_ENV
-                  echo "STATE=\"COULD NOT RESOLVE HOST (${{ env.API_NAME2 }})\"" >> variables.txt
+                  echo "STATE= COULD NOT RESOLVE HOST ${{ env.API_NAME2 }}" >> $GITHUB_ENV
+                  echo "STATE=\"COULD NOT RESOLVE HOST ${{ env.API_NAME2 }}\"" >> variables.txt
                 fi
             elif [ $curl_exit_code1 -eq 28 ] || [ $curl_exit_code2 -eq 28 ]; then
              API_STATUS="Down"
                if [ $curl_exit_code1 -eq 28 ]; then
-                echo "STATE=CONNECTION TIMED OUT (${{ env.API_NAME1 }})" >> $GITHUB_ENV
-                echo "STATE=\"CONNECTION TIMED OUT (${{ env.API_NAME1 }})\"" >> variables.txt
+                echo "STATE=CONNECTION TIMED OUT ${{ env.API_NAME1 }}" >> $GITHUB_ENV
+                echo "STATE=\"CONNECTION TIMED OUT ${{ env.API_NAME1 }}\"" >> variables.txt
               fi
               if [ $curl_exit_code2 -eq 28 ]; then
-                echo "STATE=CONNECTION TIMED OUT (${{ env.API_NAME2 }})" >> $GITHUB_ENV
-                echo "STATE=\"CONNECTION TIMED OUT (${{ env.API_NAME2 }})\"" >> variables.txt
+                echo "STATE=CONNECTION TIMED OUT ${{ env.API_NAME2 }}" >> $GITHUB_ENV
+                echo "STATE=\"CONNECTION TIMED OUT ${{ env.API_NAME2 }}\"" >> variables.txt
               fi
             elif [ "${response1}" = "404" ] || [ "${response2}" = "404" ]; then
              API_STATUS="Down"
