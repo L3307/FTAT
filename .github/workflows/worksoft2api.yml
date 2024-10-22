@@ -3,7 +3,7 @@ on:
 
 env:
   NAME_OF_TOOL: "WORKSOFT"
-  API_ENDPOINT1: https://httpstat.us/200
+  API_ENDPOINT1: http://gadc-automat01.na.pg.com:8330/isAlive
   API_NAME1: (Origins Execution)
   API_ENDPOINT2: https://httpstat.us/200
   API_NAME2: (Sugar Odyssey)
