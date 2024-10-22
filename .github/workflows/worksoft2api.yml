@@ -38,11 +38,11 @@ jobs:
             # Check for curl errors
              if [ "${response1}" = "000curl_error" ] || [ "${response2}" = "000curl_error" ]; then
               API_STATUS="Down"
-                if [ "${response1}" = "curl_error" ]; then
+                if [ "${response1}" = "000curl_error" ]; then
                   echo "STATE= COULD NOT RESOLVE HOST (${{ env.API_NAME1 }})" >> $GITHUB_ENV
                   echo "STATE=\"COULD NOT RESOLVE HOST (${{ env.API_NAME1 }})\"" >> variables.txt
                 fi
-                if [ "${response2}" = "curl_error" ]; then
+                if [ "${response2}" = "000curl_error" ]; then
                   echo "STATE= COULD NOT RESOLVE HOST (${{ env.API_NAME2 }})" >> $GITHUB_ENV
                   echo "STATE=\"COULD NOT RESOLVE HOST (${{ env.API_NAME2 }})\"" >> variables.txt
                 fi
