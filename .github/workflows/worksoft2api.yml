@@ -61,12 +61,12 @@ jobs:
               if [ "${response1}" = "404" ]; then
                 echo "STATE=404" >> $GITHUB_ENV
                 echo "STATE=\"404\"" >> variables.txt
-                 WS_API=${{ env.API_NAME1 }}
+                echo "WS_API=${{ env.API_NAME1 }}" >> $GITHUB_ENV
               fi
               if [ "${response2}" = "404" ]; then
                 echo "STATE=404" >> $GITHUB_ENV
                 echo "STATE=\"404\"" >> variables.txt
-                WS_API=${{ env.API_NAME1 }}
+                echo "WS_API=${{ env.API_NAME2 }}" >> $GITHUB_ENV
               fi
             elif [ "${response1}" = "200" ] && [ "${response2}" = "200" ]; then
               API_STATUS="Active"
