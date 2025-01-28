@@ -1,19 +1,26 @@
 name: Debug API Access
 
-on: 
+on:
   workflow_dispatch:
 
 jobs:
-  debug-job:
-    runs-on: ubuntu-latest
-
+  check_api_status:
+    runs-on: pg-pgi-4gb-1cpu
     steps:
-    - name: Check connectivity
-      run: |
-        echo "Checking connectivity to API endpoint"
-        ping -c 4 gadc-automat01.na.pg.com
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    - name: Test API access
-      run: |
-        echo "Testing API access"
-        curl -v http://gadc-automat01.na.pg.com:8330/isAlive
+      - name: Check API Status
+        id: aegis_api_status
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 http://azw-dxcapautp02.int.pg.com:5101/isAlive)
+          body=$(curl -s http://azw-dxcapautp02.int.pg.com:5101/isAlive)
+          echo "API status: ${response}"
+          echo "API response body: ${body}"
+          echo "API_STATUS=${response}" >> $GITHUB_ENV
+          echo "API_BODY=${body}" >> $GITHUB_ENV
+
+      - name: Print All API Statuses and Bodies
+        run: |
+          echo "API status: ${{ env.API_STATUS }}"
+          echo "API response body: ${{ env.API_BODY }}"
